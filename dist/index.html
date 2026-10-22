@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Luxury Drop — Import & Streetwear</title>
+  <meta name="description" content="Explora el concepto de Luxury Drop: streetwear, básicos con carácter y recompensas por tu estilo. Catálogo de demostración.">
+  <meta name="theme-color" content="#141512"><link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#catalogo">Ir al catálogo</a>
+  <div class="announcement"><span>UN BUEN FIT. UN MEJOR DROP.</span><a href="#recompensas">Más estilo, más recompensas <span aria-hidden="true">↗</span></a></div>
+  <header class="header">
+    <a class="brand" href="#" aria-label="Luxury Drop, inicio"><img src="assets/logo.png" alt="" width="52" height="52"><span>LUXURY DROP<small>IMPORT & STREETWEAR</small></span></a>
+    <nav aria-label="Navegación principal"><a class="active" href="#catalogo">El drop</a><a href="#recompensas">Recompensas <span class="nav-dot"></span></a><a href="#marca">La esencia</a></nav>
+    <div class="header-actions"><button class="icon-button" id="search-toggle" aria-label="Buscar prendas"><svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button id="cart-open" class="cart-button" aria-label="Abrir bolsa"><svg viewBox="0 0 24 24"><path d="M5 7h14l1 14H4L5 7ZM8 8V6a4 4 0 0 1 8 0v2"/></svg><span class="bag-label">Mi bolsa</span><span id="cart-count">0</span></button></div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy"><p class="eyebrow"><span></span> THE FIRST CHAPTER / DROP 01</p><h1 id="hero-title">TU ESTILO.<br>TUS REGLAS.<br><em>TU DROP.</em></h1><p class="hero-desc">Básicos con carácter. Piezas que hablan por ti.<br>Arma tu siguiente look con Luxury Drop.</p><a class="button gold" href="#catalogo">Explorar el drop <span>↗</span></a><div class="hero-foot"><span>IMPORT & STREETWEAR</span><span>EST. 2026</span></div></div>
+      <div class="hero-visual"><img class="hero-image" src="assets/jacket.jpg" alt="Chamarra negra estilo biker, inspiración para la colección" fetchpriority="high"><div class="image-top"><span>THE EVERYDAY STATEMENT</span><span>001 — LD</span></div><div class="image-caption"><span>ACTITUD<br>EN CADA DETALLE.</span><a href="#catalogo" aria-label="Descubrir las prendas">↙</a></div><div class="image-stamp">LD / 01</div></div>
+    </section>
+    <div class="ticker" aria-hidden="true"><span>WEAR YOUR OWN RULES</span><b>✳</b><span>IMPORT & STREETWEAR</span><b>✳</b><span>MAKE IT YOUR DROP</span><b>✳</b><span>LUXURY DROP</span><b>✳</b></div>
+    <section class="catalog section" id="catalogo" aria-labelledby="catalog-title">
+      <div class="section-top"><div><p class="eyebrow">01 / LA SELECCIÓN</p><h2 id="catalog-title">Tu próxima <em>rotación.</em></h2></div><p class="section-note">Piezas para hacerlas tuyas.<br>Elige. Combina. Repite.</p></div>
+      <div class="demo-note"><span>VISTA DE CONCEPTO</span> Prendas, fotos y precios ilustrativos. Aún no disponibles para compra.</div>
+      <div class="catalog-tools"><div class="filters" role="group" aria-label="Filtrar por categoría"><button class="selected" data-category="Todo" aria-pressed="true">Todo <span>04</span></button><button data-category="Playeras" aria-pressed="false">Playeras</button><button data-category="Hoodies" aria-pressed="false">Hoodies</button><button data-category="Chamarras" aria-pressed="false">Chamarras</button><button data-category="Jeans" aria-pressed="false">Jeans</button></div><label class="sort">Ordenar por <select id="sort" aria-label="Ordenar productos"><option value="featured">Selección LD</option><option value="low">Menor precio</option><option value="high">Mayor precio</option></select></label></div>
+      <div id="search-box" class="search-box" hidden><label for="search">Encuentra tu próxima pieza</label><input id="search" type="search" placeholder="Busca por nombre, categoría o color…" autocomplete="off"><button id="search-clear">Limpiar</button></div>
+      <p class="sr-only" id="results-status" aria-live="polite"></p><div class="products" id="products"></div>
+      <div class="catalog-bottom"><span>EL ESTILO ESTÁ EN CÓMO LO LLEVAS.</span><span>01 — 04 / DROP 01</span></div>
+    </section>
+    <section class="rewards" id="recompensas" aria-labelledby="rewards-title"><div class="reward-intro"><p class="eyebrow">02 / EL ESTILO TIENE SUS BENEFICIOS</p><h2 id="rewards-title">Buen fit.<br><em>Mejor recompensa.</em></h2><p>Tu bolsa puede desbloquear algo más.<br>Explora las promociones que estamos preparando.</p><a href="#catalogo" class="text-link">Empieza a armar tu bolsa <span>↗</span></a><span class="proposal-label">PROPUESTA DE PROMOCIONES · MONTOS EN MXN</span></div><div class="reward-options"><article class="reward-row"><span class="reward-number">01</span><div><h3>Sube de nivel.</h3><p>Desde <strong>$1,000</strong>, obtén <strong>5% de descuento</strong>.<br>Desde <strong>$2,000</strong>, sube a <strong>10%</strong>.</p><span>El descuento se calcula automáticamente en tu bolsa.</span></div><span class="reward-symbol">↗</span></article><article class="reward-row"><span class="reward-number">02</span><div><h3>Haz girar tu suerte.</h3><p>Al llegar a <strong>$1,500</strong>, desbloquea<br>una ruleta con premios sorpresa.</p><button class="text-link" id="wheel-open">Probar la ruleta <span>↗</span></button></div><span class="reward-symbol">✳</span></article><button class="terms-link" id="terms-open">Ver cómo funciona esta demostración <span>↗</span></button></div></section>
+    <section class="brand-story section" id="marca"><div class="story-logo"><img src="assets/logo.png" alt="Luxury Drop, Import & Streetwear" loading="lazy"></div><div><p class="eyebrow">03 / LA ESENCIA</p><h2>No sigas el ritmo.<br><em>Márcalo.</em></h2><p>Luxury Drop nace de una idea: hacer del streetwear una forma de expresión. Un espacio para encontrar esa pieza que encaja contigo y llevarla a tu manera.</p><a href="#catalogo" class="text-link">Encuentra tu siguiente drop <span>↗</span></a></div></section>
+  </main>
+  <footer><div class="footer-top"><a href="#" class="footer-brand">LUXURY DROP<span>IMPORT & STREETWEAR</span></a><span>TU ESTILO. TUS REGLAS.</span><a href="#">Volver arriba ↑</a></div><div class="footer-bottom"><span>© 2026 Luxury Drop</span><span>Concepto de tienda · Sin pedidos ni cobros reales</span><button id="credits-open">Fotografía y créditos</button></div></footer>
+  <dialog id="product-dialog" class="product-dialog"><button class="close" data-close aria-label="Cerrar producto">×</button><div id="product-detail"></div></dialog>
+  <dialog id="cart-dialog" class="cart-dialog"><div class="drawer-head"><div><p class="eyebrow">TU SELECCIÓN</p><h2>Mi bolsa <span id="drawer-count">(0)</span></h2></div><button class="close" data-close aria-label="Cerrar bolsa">×</button></div><div id="cart-content"></div></dialog>
+  <dialog id="wheel-dialog" class="wheel-dialog"><button class="close" data-close aria-label="Cerrar ruleta">×</button><p class="eyebrow">LUXURY REWARDS / DEMO</p><h2>Tu próximo <em>golpe de suerte.</em></h2><p id="wheel-status"></p><div class="wheel-wrap"><span class="pointer" aria-hidden="true">▼</span><div id="wheel" class="wheel"><span style="--angle:30deg">5% EXTRA</span><span style="--angle:90deg">ENVÍO GRATIS</span><span style="--angle:150deg">10% EXTRA</span><span style="--angle:210deg">GORRA</span><span style="--angle:270deg">5% EXTRA</span><span style="--angle:330deg">PLAYERA</span><div class="wheel-center">LD</div></div></div><button id="spin" class="button gold">Girar la ruleta <span>↗</span></button><p class="wheel-result" id="wheel-result" aria-live="polite"></p><small>Premios simulados, sin valor de canje. Una prueba por sesión.<br>En la tienda final, el giro requerirá una compra pagada.</small></dialog>
+  <dialog id="info-dialog" class="info-dialog"><button class="close" data-close aria-label="Cerrar información">×</button><div id="info-content"></div></dialog>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js" type="module"></script>
+</body></html>
