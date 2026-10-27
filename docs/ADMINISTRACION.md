@@ -6,7 +6,7 @@ Este panel **no procesa pagos ni mueve dinero**. Consultas el cupón, acuerdas e
 
 En el pie de página del sitio, entrar en **Administración → Probar perfil administrador**. También existe un acceso dentro de **Mi perfil → Mi cuenta** cuando la sesión es administradora.
 
-Sin Supabase, el panel es una demostración, identificada como tal. Incluye tres botones de ejemplo: **Vigente**, **Vencido** y **Usado**. Los datos se conservan en ese navegador; no sirven para validar descuentos reales ni se sincronizan entre dispositivos.
+Sin Supabase, el panel es una demostración, identificada como tal. Incluye códigos de ejemplo vencidos, usados y un ejemplo inicial de $200. Para repetir el recorrido, **Crear ejemplo vigente** genera otro código de prueba único, sin reactivar los ya usados. Los datos se conservan en ese navegador; no sirven para validar descuentos reales ni se sincronizan entre dispositivos.
 
 También puedes copiar el código `LD-DEMO-…` de un perfil cliente de ejemplo, entrar como administrador de prueba y consultarlo. Al registrar su canje, ese perfil de ejemplo lo verá utilizado. La demostración no permite convertir cupones de prueba en reales.
 

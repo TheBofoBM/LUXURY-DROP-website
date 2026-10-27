@@ -37,8 +37,8 @@ async function lookup(code){
   if(busy||!service.currentAdmin())return;const sequence=++searchSequence;
   $('#admin-search-submit').disabled=true;$('#admin-search-status').textContent='Consultando vigencia y estado…';$('#admin-action-status').textContent='';$('#admin-redeem').hidden=true;
   try{const data=await service.adminLookup(code);if(sequence!==searchSequence||!service.currentAdmin())return;result=data;clockOffset=data.server_now?Date.parse(data.server_now)-Date.now():0;$('#admin-confirm').checked=false;$('#admin-search-status').textContent='';renderResult();}
-  catch(error){result=null;$('#admin-result').innerHTML='';$('#admin-search-status').textContent=service.errorMessage(error);}
-  finally{$('#admin-search-submit').disabled=false;}
+  catch(error){if(sequence===searchSequence&&service.currentAdmin()){result=null;$('#admin-result').innerHTML='';$('#admin-search-status').textContent=service.errorMessage(error);}}
+  finally{if(sequence===searchSequence)$('#admin-search-submit').disabled=false;}
 }
 function requestId(payload){
   let saved;try{saved=JSON.parse(sessionStorage.getItem('ld-manual-attempt')||'null');}catch{}
@@ -59,6 +59,7 @@ export function setupAdmin({requestLogin,toast}){
   $('#admin-preview').addEventListener('click',async()=>{try{await service.previewAdminSignIn();await open();}catch(error){$('#admin-access-message').textContent=service.errorMessage(error);}});
   $('#admin-search').addEventListener('submit',e=>{e.preventDefault();lookup($('#admin-code').value.trim().toUpperCase());});
   $('#admin-examples').addEventListener('click',e=>{const b=e.target.closest('[data-example]');if(b){$('#admin-code').value=b.dataset.example;lookup(b.dataset.example);}});
+  $('#admin-new-example').addEventListener('click',()=>{if(!service.isPreview||busy)return;const code=service.createAdminExample();$('#admin-code').value=code;lookup(code);});
   $('#admin-subtotal').addEventListener('input',calculation);$('#admin-refresh-history').addEventListener('click',history);
   $('#admin-redeem').addEventListener('submit',async e=>{
     e.preventDefault();if(busy||!result?.can_redeem||!service.currentAdmin())return;

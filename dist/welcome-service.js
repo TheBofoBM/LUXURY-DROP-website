@@ -102,6 +102,12 @@ export async function adminLookup(code){
   code=code.trim().toUpperCase();if(isPreview)return previewLookup(code);
   const {data,error}=await client.rpc('ld_admin_lookup_coupon',{p_code:code});if(error)throw error;return data;
 }
+export function createAdminExample(){
+  if(!isPreview||!currentAdmin())throw new Error('PREVIEW_DISABLED');
+  const data=adminPreviewStore();const issued=Date.now();
+  const coupon={id:crypto.randomUUID(),user_id:'preview-customer',code:'LD-DEMO-'+crypto.randomUUID().replaceAll('-','').slice(0,16).toUpperCase(),amount_cents:20000,status:'available',issued_at:new Date(issued).toISOString(),expires_at:new Date(issued+welcomeDuration).toISOString(),preview:true};
+  data.coupons.unshift(coupon);localStorage.setItem(adminPreviewKey,JSON.stringify(data));return coupon.code;
+}
 export async function adminSales(){
   if(!currentAdmin())throw new Error('ADMIN_REQUIRED');
   if(isPreview)return {sales:adminPreviewStore().sales.slice(0,20)};
