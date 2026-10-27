@@ -27,7 +27,7 @@ git commit -m "Actualiza el catálogo"
 git push origin main
 ```
 
-No es necesario iniciar un servidor local. El código del sitio se versiona en `dist/`; `npm run build` genera el cliente en `dist/vendor/` y la configuración pública de autenticación. El repositorio conserva la configuración del prototipo anterior en `.openai/`, pero GitHub Pages publica únicamente `dist/`.
+No es necesario iniciar un servidor local. El código del sitio se versiona en `dist/`; `npm run build` genera el cliente en `dist/vendor/`, la configuración pública de autenticación y los archivos de publicación en `dist/assets/build/`. Sus nombres incluyen una huella del contenido para evitar mezclar código y estilos de distintas versiones por caché. Las carpetas generadas no se suben a Git y Actions las reconstruye. El repositorio conserva la configuración del prototipo anterior en `.openai/`, pero GitHub Pages publica únicamente `dist/`.
 
 ## Archivos para editar
 

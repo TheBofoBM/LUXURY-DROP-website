@@ -3,6 +3,7 @@ node_modules/
 *.tar.gz
 *.log
 dist/vendor/
+dist/assets/build/
 .env
 .env.*
 supabase/.temp/
