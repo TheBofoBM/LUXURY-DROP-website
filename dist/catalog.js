@@ -5,13 +5,12 @@ export const products = [
   {id:'jacket',name:'Midnight Jacket',category:'Chamarras',detail:'Estilo biker · Negro',price:1299,image:'jacket.jpg',sizes:['S','M','L'],tag:'STATEMENT PIECE',stock:3},
   {id:'denim',name:'Classic Denim',category:'Jeans',detail:'Corte recto · Azul',price:749,image:'denim.jpg',sizes:['28','30','32','34'],tag:'DAILY ROTATION',stock:6}
 ];
-export const campaign = {tiers:[{min:1000,rate:0.05},{min:2000,rate:0.10}],spinMinimum:1500};
-export const prizes = ['5% extra','Envío gratis','10% extra','Gorra de regalo','5% extra','Playera de regalo'];
+export const campaign = {tiers:[{min:1000,rate:0.05},{min:2000,rate:0.10}]};
 export function totals(cart) {
   const subtotal = cart.reduce((sum,line) => sum + (products.find(p=>p.id===line.id)?.price || 0)*line.qty,0);
   const rate = campaign.tiers.filter(t=>subtotal>=t.min).at(-1)?.rate || 0;
   const discount = Math.round(subtotal*rate*100)/100;
-  return {subtotal,rate,discount,total:subtotal-discount,spinEligible:subtotal>=campaign.spinMinimum};
+  return {subtotal,rate,discount,total:Math.round((subtotal-discount)*100)/100};
 }
 export function sanitizeCart(value) {
   if (!Array.isArray(value)) return [];

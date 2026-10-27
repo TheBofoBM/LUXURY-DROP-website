@@ -1,6 +1,8 @@
 # Luxury Drop · Import & Streetwear
 
-Tienda de demostración preparada para **GitHub Pages**, con diseño responsive, catálogo, tallas, bolsa y promociones. HTML, CSS y JavaScript nativos: el sitio publicado no requiere servidor propio, localhost ni instalación de Node por parte del visitante.
+Tienda de demostración preparada para **GitHub Pages**, con catálogo, tallas, bolsa, bienvenida con ruleta y **Perfil → Cupones**. El sitio publicado no requiere localhost ni instalación de Node por parte del visitante. Cuentas reales y cupones protegidos se conectan a Supabase; mientras no esté configurado, el recorrido se identifica como vista previa.
+
+**Para activar registro y cupones reales:** [guía paso a paso](docs/ACTIVAR-CUENTAS-Y-CUPONES.md). Incluye configuración de correo/Google, SQL, controles de acceso y contrato para integrar pagos.
 
 **Sitio:** https://thebofobm.github.io/LUXURY-DROP-website/
 
@@ -10,7 +12,7 @@ Tienda de demostración preparada para **GitHub Pages**, con diseño responsive,
 
 1. En el repositorio, abrir **Settings → Pages**.
 2. En **Build and deployment → Source**, seleccionar **GitHub Actions**. Solo se configura una vez.
-3. Subir cambios a `main`. El workflow `.github/workflows/pages.yml` verifica JavaScript, archivos, rutas e importaciones, ejecuta pruebas de promociones y publica el contenido de `dist/`.
+3. Subir cambios a `main`. El workflow `.github/workflows/pages.yml` instala dependencias, empaqueta el cliente oficial de autenticación, verifica rutas, ejecuta pruebas de promociones y PostgreSQL, y publica `dist/`.
 4. Revisar **Actions → Publicar Luxury Drop en GitHub Pages**. Cuando termine correctamente, la página estará en la URL anterior. También se puede ejecutar desde **Run workflow**.
 
 El workflow usa acciones oficiales de GitHub y su token automático. No requiere configurar tokens personales ni secretos. La publicación se detiene si falla una validación. Referencia: https://docs.github.com/es/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
@@ -25,7 +27,7 @@ git commit -m "Actualiza el catálogo"
 git push origin main
 ```
 
-No es necesario iniciar un servidor local para ver el sitio. La carpeta `dist/` se versiona y contiene el sitio completo. El repositorio conserva la configuración del prototipo anterior en `.openai/`, pero GitHub Pages publica únicamente `dist/`.
+No es necesario iniciar un servidor local. El código del sitio se versiona en `dist/`; `npm run build` genera el cliente en `dist/vendor/` y la configuración pública de autenticación. El repositorio conserva la configuración del prototipo anterior en `.openai/`, pero GitHub Pages publica únicamente `dist/`.
 
 ## Archivos para editar
 
@@ -37,8 +39,14 @@ dist/
   app.js                    Catálogo, tallas, bolsa y ruleta
   catalog.js                Productos y reglas de promociones
   assets/                   Logo y fotografías
-scripts/validate-site.mjs    Verifica archivos y rutas para Pages
-tests/promotions.test.mjs    Pruebas de descuentos e inventario
+  welcome-ui.js             Bienvenida, perfil y sección Cupones
+  welcome-service.js        Autenticación, emisión y consulta
+  welcome-model.js          Vigencia y reglas de presentación
+  welcome.css               Diseño de registro y cupones
+  config.js                 Parámetros públicos de autenticación
+scripts/                    Build y verificación de archivos/rutas
+supabase/migrations/        Tablas y funciones de cupones protegidos
+tests/                      Pruebas de frontend y de PostgreSQL
 ```
 
 Los recursos usan rutas relativas, compatibles con `/LUXURY-DROP-website/`. Las imágenes se incluyen en `dist/assets/`; las fuentes se obtienen de Google Fonts y tienen alternativas del sistema.
@@ -46,12 +54,13 @@ Los recursos usan rutas relativas, compatibles con `/LUXURY-DROP-website/`. Las 
 Para validación por terminal o CI, con Node.js 22 o superior:
 
 ```powershell
+npm ci
+npm run build
 npm run check
 npm test
-npm run build
 ```
 
-No hay dependencias que instalar. `build` verifica que `dist/` esté listo para publicar; no inicia procesos ni servidores.
+La primera vez ejecutar `npm ci` y `npm run build` antes de `npm run check`. Las dependencias están fijadas en `package-lock.json`. Ninguno de estos comandos inicia un servidor. GitHub Actions ejecuta los pasos automáticamente.
 
 ## Qué se puede probar
 
@@ -59,12 +68,14 @@ No hay dependencias que instalar. `build` verifica que `dist/` esté listo para 
 - Detalle con selección de talla e inventario ilustrativo.
 - Bolsa persistente por navegador con cantidades y descuentos automáticos.
 - 5% desde $1,000 o 10% desde $2,000 MXN, aplicando solo el nivel más alto.
-- Giro de demostración desde $1,500 de subtotal, una vez por sesión de pestaña.
+- Bienvenida al entrar: un giro por cuenta con premios de $50 a $400 MXN, sin monto previo en la bolsa.
+- Perfil → Cupones, código personal, fecha de caducidad y cuenta regresiva de 24 horas.
+- Previsualización del descuento en la bolsa; se aplica el mayor ahorro, sin acumular promociones.
 - Resumen de selección copiable.
 
 ## Estado comercial y créditos
 
-Productos, fotografías, precios, tallas, inventario y premios son ilustrativos. No procesa pedidos ni pagos. Los premios no son canjeables ni se suman a los descuentos de la bolsa.
+Productos, fotografías, precios, tallas e inventario son ilustrativos. No procesa pedidos ni pagos. Sin Supabase configurado, los perfiles son de ejemplo y los códigos `LD-DEMO-…` no son canjeables. El SQL y la integración real están preparados; la activación y los pagos todavía requieren los servicios descritos en la guía.
 
 Logo proporcionado por Luxury Drop. Fotografías de referencia de Unsplash; sus enlaces están en los créditos del sitio. Tipografías Barlow Condensed y DM Sans mediante Google Fonts.
 

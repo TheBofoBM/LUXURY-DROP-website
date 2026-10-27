@@ -1,16 +1,18 @@
 import assert from 'node:assert/strict';
-import { readFile, stat } from 'node:fs/promises';
+import { readFile, stat, readdir } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { products } from '../dist/catalog.js';
 
 const root = new URL('../dist/', import.meta.url);
 const base = new URL('https://thebofobm.github.io/LUXURY-DROP-website/');
 const html = await readFile(new URL('index.html', root), 'utf8');
-const css = await readFile(new URL('styles.css', root), 'utf8');
-const app = await readFile(new URL('app.js', root), 'utf8');
+const css = (await Promise.all(['styles.css','welcome.css'].map(file=>readFile(new URL(file,root),'utf8')))).join('\n');
+const jsFiles=(await readdir(root)).filter(file=>file.endsWith('.js'));
+const app = (await Promise.all(jsFiles.map(file=>readFile(new URL(file,root),'utf8')))).join('\n');
 const refs = [...html.matchAll(/(?:src|href)="([^"]+)"/g)].map(m => m[1]);
 refs.push(...[...css.matchAll(/url\(['"]?([^'"\)]+)['"]?\)/g)].map(m => m[1]));
 refs.push(...[...app.matchAll(/from\s+['"]([^'"]+)['"]/g)].map(m => m[1]));
+refs.push(...[...app.matchAll(/import\(['"]([^'"]+)['"]\)/g)].map(m => m[1]));
 refs.push(...products.map(p => `assets/${p.image}`));
 refs.push('.nojekyll');
 const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]));

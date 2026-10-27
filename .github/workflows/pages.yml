@@ -23,7 +23,15 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: '22'
-      - name: Verificar sintaxis y rutas
+      - name: Instalar dependencias
+        run: npm ci
+      - name: Preparar cliente de cuentas
+        run: npm run build
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_GOOGLE_ENABLED: ${{ vars.SUPABASE_GOOGLE_ENABLED }}
+      - name: Verificar código y archivos estáticos
         run: npm run check
       - name: Probar promociones e inventario
         run: npm test
@@ -44,6 +52,18 @@ jobs:
         uses: actions/checkout@v6
       - name: Configurar Pages
         uses: actions/configure-pages@v5
+      - name: Configurar Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+      - name: Instalar herramientas de publicación
+        run: npm ci
+      - name: Construir sitio estático
+        run: npm run build
+        env:
+          SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+          SUPABASE_GOOGLE_ENABLED: ${{ vars.SUPABASE_GOOGLE_ENABLED }}
       - name: Preparar archivos estáticos
         uses: actions/upload-pages-artifact@v4
         with:
