@@ -79,4 +79,4 @@ Productos, fotografías, precios, tallas e inventario son ilustrativos. No proce
 
 Logo proporcionado por Luxury Drop. Fotografías de referencia de Unsplash; sus enlaces están en los créditos del sitio. Tipografías Barlow Condensed y DM Sans mediante Google Fonts.
 
-Para vender se deberán definir inventario real, fotos, precios, canal de pedidos, envío y términos de promoción. GitHub Pages aloja el frontend; una versión con pagos y premios reales necesitará un servicio externo que valide precios, stock, pagos y un único giro por pedido pagado. La lógica local de esta demostración no es un control de producción.
+Para vender se deberán definir inventario real, fotos, precios, canal de pedidos, envío y términos de promoción. GitHub Pages aloja el frontend; el servicio externo deberá validar precios, stock, pagos y el canje de un único cupón de bienvenida por cuenta en su primera compra. La lógica local de esta demostración no es un control de producción.
