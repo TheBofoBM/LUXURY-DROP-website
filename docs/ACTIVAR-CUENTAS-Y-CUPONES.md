@@ -6,7 +6,7 @@ El frontend permanece en GitHub Pages. Supabase aporta Auth (correo y Google) y 
 
 1. Crear un proyecto en https://supabase.com/dashboard con tu cuenta de propietario.
 2. Guardar la contraseña de la base de datos de forma privada.
-3. En SQL Editor, ejecutar una vez el archivo `supabase/migrations/202610270001_welcome_coupons.sql` completo. La migración se ejecuta dentro de una transacción.
+3. En SQL Editor, ejecutar una vez y en orden `supabase/migrations/202610270001_welcome_coupons.sql` y `supabase/migrations/202610270002_manual_admin.sql`. Si la primera ya se aplicó, ejecutar solo la segunda. Ambas se ejecutan dentro de una transacción.
 4. En Authentication → URL Configuration, configurar Site URL y una Redirect URL permitida exactamente como `https://thebofobm.github.io/LUXURY-DROP-website/` (incluye la barra final).
 
 ## 2. Acceso por correo
@@ -45,31 +45,23 @@ También es posible editar `dist/config.js` directamente con los dos parámetros
 - Una sola fila por `(user_id, campaign)` impide un segundo giro de la misma campaña, incluso al caducar el primero.
 - Un índice `UNIQUE` protege el código. Se genera en PostgreSQL con UUID aleatorio, sin aceptar código, monto ni fecha del navegador.
 - `issued_at` y `expires_at` provienen del reloj del servidor, con diferencia exacta de 24 horas. La cuenta regresiva usa el desfase del reloj del servidor; la validación definitiva ocurre en PostgreSQL.
-- RLS permite leer únicamente los cupones y pedidos propios. El navegador no tiene permiso para insertar, editar, reservar, canjear ni eliminar cupones.
+- RLS permite a clientes leer únicamente los cupones y ventas propios. No pueden editar ni canjear cupones. El panel de administración accede a funciones que vuelven a verificar el rol privado en cada solicitud.
 - `ld_claim_welcome()` exige identidad y correo verificado. Si se repite una solicitud, devuelve el mismo cupón; no vuelve a sortear.
-- Reserva y confirmación de pago bloquean la fila de la cuenta y del cupón dentro de la transacción. Dos pedidos no pueden reservar el mismo código. Un fallo revierte la operación completa.
+- El canje manual bloquea la fila de la cuenta y del cupón dentro de una transacción. Dos administradores no pueden consumir el mismo código. Un fallo revierte la operación completa.
 - El derecho se limita a una cuenta sin compras pagadas. No identifica a una misma persona que use cuentas con correos diferentes; esto necesitaría reglas antifraude adicionales antes del lanzamiento.
 
 Probabilidades propuestas, modificables en el SQL antes de activar la campaña: $50 (35%), $100 (30%), $150 (20%), $200 (10%), $300 (4%), $400 MXN (1%). El frontend muestra las mismas condiciones. Sin compra mínima propuesta, sin acumular descuentos, sin saldo a favor ni efectivo. El descuento se limita al subtotal de productos.
 
-## 6. Conectar compras reales (aún pendiente)
+## 6. Ventas manuales: efectivo o transferencia
 
-El sitio todavía no procesa pagos. El carrito muestra una previsualización; copiar, ver o aplicar un cupón en esa vista **no lo reserva ni lo consume**. El alta de Supabase activa el registro, la emisión y la consulta real de cupones, pero no convierte el carrito de demostración en un checkout comercial.
+El carrito muestra una previsualización; copiar, ver o aplicar un cupón en esa vista **no lo reserva ni lo consume**. Para operar la promoción no hace falta integrar pagos en línea.
 
-El futuro backend de checkout debe:
+Una vez conectado Supabase, habilitar de forma privada tu cuenta administradora según [ADMINISTRACION.md](ADMINISTRACION.md). Desde **Administración** podrás consultar un código y registrar su canje cuando confirmes personalmente la venta. El panel calcula el descuento, conserva un historial y marca el código como utilizado, sin mover dinero.
 
-1. Autenticar la sesión, obtener `user_id` de su token verificado y calcular subtotal, inventario y promociones desde registros autoritativos. No confiar en montos, usuario, premio ni estado enviados por el navegador.
-2. Crear un pedido `ld_orders` con ID estable, precios confirmados y estado `pending` usando una credencial privada de servidor.
-3. Reservar el código con `ld_reserve_coupon(p_user_id,p_order_id,p_code)`. Estas funciones solo son ejecutables por `service_role`, nunca desde el frontend. La respuesta devuelve descuento en centavos, ID del cupón y caducidad. Reintentar con el mismo pedido es idempotente; otro pedido queda rechazado.
-4. Crear la sesión del proveedor de pagos con exactamente ese descuento y una expiración que no supere `expires_at`. Si el proveedor no permite cumplir esa caducidad, deberá elegirse otra estrategia de checkout antes de habilitar la promoción.
-5. Al recibir un webhook con firma válida, verificar en el proveedor importe, moneda MXN, pedido, identidad y fecha de pago. Llamar a `ld_complete_order(p_user_id,p_order_id,p_payment_id,p_paid_at)` con la fecha confirmada por el proveedor, nunca con una fecha enviada por el cliente. No completar compras desde la URL de retorno del navegador.
-6. Si se abandona/cancela un pago, primero cancelar la sesión del proveedor y confirmar que ya no puede cobrar; después llamar a `ld_cancel_order`. No liberar una reserva por un temporizador del navegador mientras el pago siga abierto. Liberar no extiende las 24 horas.
-7. Si se completa otro pedido sin cupón, cancelar primero cualquier sesión descontada pendiente de esa cuenta. Completar la primera compra sin el cupón deja sin efecto el beneficio de bienvenida. Conservar un registro de webhooks/idempotencia y resolver pagos fuera de plazo o inconsistentes mediante conciliación/reembolso según el proveedor.
-
-La integración concreta de webhooks y pedidos depende del proveedor de pagos que se elija; no está simulada como si ya existiera.
+La operación real queda lista al aplicar ambas migraciones, configurar Auth y otorgar el permiso de administrador. Las funciones anteriores de reserva/pago se conservan por compatibilidad; el flujo actual no depende de pasarelas ni webhooks.
 
 ## 7. Verificación antes de abrir al público
 
-Las pruebas `npm test` ejecutan la migración real en PostgreSQL embebido (PGlite) con una emulación de las identidades de Supabase. Cubren emisión repetida, 24 horas, permisos, aislamiento por cuenta, reserva exclusiva, cancelación y consumo idempotente. No sustituyen pruebas de OAuth, correo, webhooks ni carga concurrente contra el proyecto alojado.
+Las pruebas `npm test` ejecutan las migraciones reales en PostgreSQL embebido (PGlite) con una emulación de las identidades de Supabase. Cubren emisión repetida, 24 horas, permisos, aislamiento por cuenta y canjes manuales idempotentes. No sustituyen pruebas de OAuth, correo ni carga concurrente contra el proyecto alojado.
 
-En el proyecto real, probar dos cuentas, dos navegadores y dos peticiones simultáneas de reserva; comprobar que solo una obtiene el cupón. Verificar también acceso desde otro dispositivo, cierre de sesión, reconexión, expiración, webhook duplicado y cancelación de sesiones del proveedor. Todavía no se han ejecutado estas verificaciones contra un proyecto Supabase real.
+En el proyecto real, probar dos cuentas y dos administradores confirmando el mismo cupón al mismo tiempo; comprobar que solo se registra una venta. Verificar también acceso desde otro dispositivo, cierre de sesión, reconexión, expiración y reintentos tras un error de red. Todavía no se han ejecutado estas verificaciones contra un proyecto Supabase real.

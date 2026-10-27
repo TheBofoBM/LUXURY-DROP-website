@@ -1,5 +1,6 @@
 import { products, campaign, totals, sanitizeCart } from './catalog.js';
-import { setupWelcome,showWheel } from './welcome-ui.js';
+import { setupWelcome,showWheel,showWelcome } from './welcome-ui.js';
+import { setupAdmin } from './admin-ui.js';
 import { currentWelcome,currentUser,now } from './welcome-service.js';
 import { welcomeDiscount } from './welcome-model.js';
 const $ = s=>document.querySelector(s);
@@ -66,4 +67,4 @@ function showOrder(){const t=totals(cart);const c=currentWelcome().coupon;const 
 $('#info-content').addEventListener('click',async e=>{if(e.target.closest('#copy-order')){try{await navigator.clipboard.writeText(orderText);$('#copy-order').textContent='Resumen copiado ✓';}catch{$('#copy-order').textContent='Selecciona y copia el texto de arriba';}}});
 window.addEventListener('ld:welcome-updated',()=>{if(!currentUser())appliedCouponId=null;renderCart();});
 window.addEventListener('ld:apply-coupon',()=>{appliedCouponId=currentWelcome().coupon?.id||null;renderCart();openDialog('#cart-dialog');if(!cart.length)toast('Añade una prenda para previsualizar tu descuento.');});
-renderProducts();renderCart();setupWelcome(toast);
+renderProducts();renderCart();setupWelcome(toast);setupAdmin({requestLogin:showWelcome,toast});

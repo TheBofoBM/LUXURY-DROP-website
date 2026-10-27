@@ -30,6 +30,7 @@ function renderWheel(){
 function renderProfile(){
   const c=service.currentWelcome().coupon;const status=currentStatus();const user=service.currentUser();
   $('#profile-identity').textContent=user?.email||'Mi cuenta Luxury Drop';
+  $('#profile-admin-open').hidden=!service.currentAdmin();
   $('#account-mode').textContent=service.isPreview?'Perfil de prueba guardado solo en este navegador. No es una cuenta real y sus cupones no se pueden canjear.':'Tu cuenta y tus cupones se guardan de forma segura. Tu sesión está activa.';
   $('#coupon-count').textContent=status==='available'?'1':'0';
   $('.profile-notice').hidden=status!=='available';
@@ -43,7 +44,7 @@ function updated(){
   renderProfile();renderWheel();
   window.dispatchEvent(new CustomEvent('ld:welcome-updated'));
 }
-async function authenticated(){close('#welcome-dialog');authEmail='';$('#email-form').hidden=false;$('#otp-form').hidden=true;$('#auth-status').textContent='';showWheel();}
+async function authenticated(){close('#welcome-dialog');authEmail='';$('#email-form').hidden=false;$('#otp-form').hidden=true;$('#auth-status').textContent='';let adminIntent=false;try{adminIntent=sessionStorage.getItem('ld-admin-intent')==='1';}catch{}if(adminIntent){window.dispatchEvent(new CustomEvent('ld:admin-authenticated'));return;}showWheel();}
 async function authTask(task){if(authBusy)return;authBusy=true;document.querySelectorAll('#auth-live button,#preview-signin').forEach(b=>b.disabled=true);try{await task();}catch(error){$('#auth-status').textContent=service.errorMessage(error);}finally{authBusy=false;document.querySelectorAll('#auth-live button,#preview-signin').forEach(b=>b.disabled=false);}}
 export async function setupWelcome(toast){
   notify=toast;
@@ -84,7 +85,9 @@ export async function setupWelcome(toast){
   try{
     await service.initializeWelcome(updated);
     let intent=null;try{intent=sessionStorage.getItem('ld-auth-intent');sessionStorage.removeItem('ld-auth-intent');}catch{}
-    if(intent&&service.currentUser())showWheel();
+    let adminIntent=false;try{adminIntent=sessionStorage.getItem('ld-admin-intent')==='1';}catch{}
+    if(adminIntent&&service.currentUser())window.dispatchEvent(new CustomEvent('ld:admin-authenticated'));
+    else if(intent&&service.currentUser())showWheel();
     else if(!service.currentUser()){let seen=false;try{seen=sessionStorage.getItem('ld-welcome-seen-v2')==='1';}catch{}if(!seen)setTimeout(()=>{if(!document.querySelector('dialog[open]')&&!service.currentUser())showWelcome();},1200);}
   }catch{$('#auth-status').textContent='El acceso no está disponible temporalmente. Inténtalo más tarde.';$('#auth-live').hidden=true;}
 }

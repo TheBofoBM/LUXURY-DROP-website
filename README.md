@@ -2,7 +2,7 @@
 
 Tienda de demostración preparada para **GitHub Pages**, con catálogo, tallas, bolsa, bienvenida con ruleta y **Perfil → Cupones**. El sitio publicado no requiere localhost ni instalación de Node por parte del visitante. Cuentas reales y cupones protegidos se conectan a Supabase; mientras no esté configurado, el recorrido se identifica como vista previa.
 
-**Para activar registro y cupones reales:** [guía paso a paso](docs/ACTIVAR-CUENTAS-Y-CUPONES.md). Incluye configuración de correo/Google, SQL, controles de acceso y contrato para integrar pagos.
+**Para activar registro y cupones reales:** [guía paso a paso](docs/ACTIVAR-CUENTAS-Y-CUPONES.md). Para validar descuentos en efectivo o transferencia: [administración y canje manual](docs/ADMINISTRACION.md). No hace falta una pasarela de pagos.
 
 **Sitio:** https://thebofobm.github.io/LUXURY-DROP-website/
 
@@ -72,11 +72,12 @@ La primera vez ejecutar `npm ci` y `npm run build` antes de `npm run check`. Las
 - Perfil → Cupones, código personal, fecha de caducidad y cuenta regresiva de 24 horas.
 - Previsualización del descuento en la bolsa; se aplica el mayor ahorro, sin acumular promociones.
 - Resumen de selección copiable.
+- Panel de administrador: buscar código, validar vigencia/cliente, calcular descuento y registrar un canje manual por efectivo o transferencia, con historial privado.
 
 ## Estado comercial y créditos
 
-Productos, fotografías, precios, tallas e inventario son ilustrativos. No procesa pedidos ni pagos. Sin Supabase configurado, los perfiles son de ejemplo y los códigos `LD-DEMO-…` no son canjeables. El SQL y la integración real están preparados; la activación y los pagos todavía requieren los servicios descritos en la guía.
+Productos, fotografías, precios, tallas e inventario son ilustrativos. Sin Supabase configurado, los perfiles (incluido el administrador) son de ejemplo y los códigos `LD-DEMO-…` no son canjeables en ventas reales. El SQL y la integración están preparados; falta conectar Supabase y asignar tu cuenta administradora. El canje manual no procesa pagos: tú confirmas la venta fuera del sitio.
 
 Logo proporcionado por Luxury Drop. Fotografías de referencia de Unsplash; sus enlaces están en los créditos del sitio. Tipografías Barlow Condensed y DM Sans mediante Google Fonts.
 
-Para vender se deberán definir inventario real, fotos, precios, canal de pedidos, envío y términos de promoción. GitHub Pages aloja el frontend; el servicio externo deberá validar precios, stock, pagos y el canje de un único cupón de bienvenida por cuenta en su primera compra. La lógica local de esta demostración no es un control de producción.
+Para vender se deberán definir inventario real, fotos, precios, canal de pedidos, envío y términos de promoción. GitHub Pages aloja el frontend; Supabase valida identidad, permisos y el canje único. La lógica local de la demostración no es un control de producción.
