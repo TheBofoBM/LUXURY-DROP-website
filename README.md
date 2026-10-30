@@ -70,7 +70,7 @@ La primera vez ejecutar `npm ci` y `npm run build` antes de `npm run check`. Las
 - Detalle con selección de talla e inventario ilustrativo.
 - Bolsa persistente por navegador con cantidades y descuentos automáticos.
 - 5% desde $1,000 o 10% desde $2,000 MXN, aplicando solo el nivel más alto.
-- Bienvenida al entrar: un giro por cuenta con premios de $50 a $400 MXN, sin monto previo en la bolsa.
+- Bienvenida al entrar: un giro por cuenta con premios de 5% a 25% sobre todas las prendas de la primera compra, sin tope en pesos, sin monto previo en la bolsa.
 - Perfil → Cupones, código personal, fecha de caducidad y cuenta regresiva de 24 horas.
 - Previsualización del descuento en la bolsa; se aplica el mayor ahorro, sin acumular promociones.
 - Resumen de selección copiable.
@@ -83,3 +83,9 @@ Productos, fotografías, precios, tallas e inventario son ilustrativos. Supabase
 Logo proporcionado por Luxury Drop. Fotografías de referencia de Unsplash; sus enlaces están en los créditos del sitio. Tipografías Barlow Condensed y DM Sans mediante Google Fonts.
 
 Para vender se deberán definir inventario real, fotos, precios, canal de pedidos, envío y términos de promoción. GitHub Pages aloja el frontend; Supabase valida identidad, permisos y el canje único. La lógica local de la demostración no es un control de producción.
+
+## Bienvenida por porcentaje
+
+Premios: **5%, 10%, 15%, 20% y 25%**; probabilidades respectivas **5%, 10%, 15%, 25% y 45%**. El mayor premio es el más probable. Un 25% sobre $1,600 ahorra $400; sobre $3,200 ahorra $800. No se acumula con otras promociones, no incluye envío y se redondea una sola vez al centavo sobre el subtotal completo.
+
+La migración `supabase/migrations/202610300003_percentage_welcome.sql` se aplica después de las dos anteriores. Conserva los cupones de importe fijo y su historial; los nuevos giros generan porcentaje. La campaña y la restricción de un giro por cuenta permanecen: no se vuelve a sortear al actualizar el sitio.

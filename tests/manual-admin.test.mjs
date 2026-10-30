@@ -12,7 +12,7 @@ test('private administrator validation and atomic offline redemption',async t=>{
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     grant usage on schema auth to authenticated,anon;
     grant execute on function auth.uid() to authenticated,anon;`);
-  for(const file of ['202610270001_welcome_coupons.sql','202610270002_manual_admin.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
+  for(const file of ['202610270001_welcome_coupons.sql','202610270002_manual_admin.sql','202610300003_percentage_welcome.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
   const [admin,admin2,client,expiredClient,reservedClient,smallClient]=[1,2,3,4,5,6].map(n=>`20000000-0000-4000-8000-${String(n).padStart(12,'0')}`);
   for(const id of [admin,admin2,client,expiredClient,reservedClient,smallClient])await db.query('insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())',[id,id.slice(-1)+'@example.test']);
   await db.query('insert into public.ld_admins(user_id) values($1),($2)',[admin,admin2]);
@@ -33,12 +33,12 @@ test('private administrator validation and atomic offline redemption',async t=>{
   });
   await t.test('administrator gets authoritative amount, owner, expiry and unknown-code result',async()=>{
    await asUser(admin);assert.equal((await db.query('select public.ld_is_admin() as allowed')).rows[0].allowed,true);
-   const result=await lookup(coupon.code.toLowerCase());assert.equal(result.can_redeem,true);assert.equal(result.customer_email,'3@example.test');assert.equal(result.coupon.amount_cents,coupon.amount_cents);
+   const result=await lookup(coupon.code.toLowerCase());assert.equal(result.can_redeem,true);assert.equal(result.customer_email,'3@example.test');assert.equal(result.coupon.discount_percent,coupon.discount_percent);
    assert.equal((await lookup('LD-NO-EXISTE')).found,false);
   });
   await t.test('manual cash sale redeems once and an identical retry is idempotent',async()=>{
    const result=(await redeem(admin,coupon.code,90000,'cash','VENTA-001',request)).rows[0].data;
-   assert.equal(result.status,'used');assert.equal(result.sale.method,'cash');assert.equal(result.sale.collected_cents,90000-coupon.amount_cents);
+   assert.equal(result.status,'used');assert.equal(result.sale.method,'cash');assert.equal(result.sale.collected_cents,90000-900*coupon.discount_percent);
    const retry=(await redeem(admin,coupon.code,90000,'cash','VENTA-001',request)).rows[0].data;assert.equal(retry.sale.id,result.sale.id);
    await assert.rejects(redeem(admin,coupon.code,95000,'cash','VENTA-001',request),/REQUEST_CONFLICT/);
    await assert.rejects(redeem(admin,coupon.code,90000,'cash',null,'30000000-0000-4000-8000-000000000002'),/COUPON_ALREADY_USED/);
@@ -55,10 +55,10 @@ test('private administrator validation and atomic offline redemption',async t=>{
    await assert.rejects(redeem(admin,expired.code,80000,'cash',null,'30000000-0000-4000-8000-000000000005'),/COUPON_EXPIRED/);
    await assert.rejects(redeem(admin,reserved.code,80000,'cash',null,'30000000-0000-4000-8000-000000000006'),/COUPON_UNAVAILABLE/);
   });
-  await t.test('transfer sale clamps discount to subtotal and is included in private audit history',async()=>{
+  await t.test('transfer sale applies percentage to a small subtotal and is included in private audit history',async()=>{
    await assert.rejects(redeem(admin,small.code,0,'cash',null,'30000000-0000-4000-8000-000000000007'),/INVALID_SALE/);
    const result=(await redeem(admin,small.code,1000,'transfer','VENTA-002','30000000-0000-4000-8000-000000000008')).rows[0].data;
-   assert.equal(result.sale.discount_cents,1000);assert.equal(result.sale.collected_cents,0);
+   assert.equal(result.sale.discount_cents,10*small.discount_percent);assert.equal(result.sale.collected_cents,1000-10*small.discount_percent);
    const list=(await db.query('select public.ld_admin_recent_sales() as data')).rows[0].data.sales;assert.equal(list.length,2);assert(list.some(s=>s.reference==='VENTA-002'&&s.recorded_by==='1@example.test'));
   });
  }finally{await db.close();}

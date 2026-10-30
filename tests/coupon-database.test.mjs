@@ -10,13 +10,13 @@ test('PostgreSQL coupon issuance, isolation, reservation and payment rules',asyn
  try{
   await db.exec(`create role anon; create role authenticated; create role service_role;
     create schema auth;
-    create table auth.users(id uuid primary key,email_confirmed_at timestamptz);
+    create table auth.users(id uuid primary key,email text,email_confirmed_at timestamptz);
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     grant usage on schema auth to authenticated,anon;
     grant execute on function auth.uid() to authenticated,anon;`);
-  await db.exec(await readFile(new URL('../supabase/migrations/202610270001_welcome_coupons.sql',import.meta.url),'utf8'));
+  for(const file of ['202610270001_welcome_coupons.sql','202610270002_manual_admin.sql','202610300003_percentage_welcome.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
   const ids=[1,2,3,4].map(n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`);
-  for(const id of ids)await db.query('insert into auth.users values($1,now())',[id]);
+  for(const id of ids)await db.query('insert into auth.users(id,email_confirmed_at) values($1,now())',[id]);
   const asUser=async id=>{await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[id]);await db.exec('set role authenticated');};
   const admin=()=>db.exec('reset role');
   const claim=async()=> (await db.query('select public.ld_claim_welcome() as data')).rows[0].data;
@@ -26,7 +26,7 @@ test('PostgreSQL coupon issuance, isolation, reservation and payment rules',asyn
    assert(attempts.every(r=>r.coupon.id===coupon.id&&r.coupon.code===coupon.code&&r.coupon.expires_at===coupon.expires_at));
    assert.equal(Date.parse(coupon.expires_at)-Date.parse(coupon.issued_at),86400000);
    assert.match(coupon.code,/^LD-[A-F0-9]{32}$/);
-   assert(coupon.amount_cents>=5000&&coupon.amount_cents<=40000);
+   assert([5,10,15,20,25].includes(coupon.discount_percent));assert.equal(coupon.amount_cents,null);
    assert.equal((await db.query('select count(*)::int as n from public.ld_coupons')).rows[0].n,1);
   });
   await t.test('browser cannot forge coupons, see another account or reserve/redeem',async()=>{
@@ -38,7 +38,7 @@ test('PostgreSQL coupon issuance, isolation, reservation and payment rules',asyn
   const order1='10000000-0000-4000-8000-000000000001',order2='10000000-0000-4000-8000-000000000002';
   await t.test('one coupon can be reserved by only one order; retries do not extend expiry',async()=>{
    await admin();await db.query('insert into public.ld_orders(id,user_id,subtotal_cents) values($1,$3,1000),($2,$3,90000)',[order1,order2,ids[0]]);
-   const r=await db.query('select public.ld_reserve_coupon($1,$2,$3) as data',[ids[0],order1,coupon.code]);assert.equal(r.rows[0].data.discount_cents,1000);
+   const r=await db.query('select public.ld_reserve_coupon($1,$2,$3) as data',[ids[0],order1,coupon.code]);assert.equal(r.rows[0].data.discount_cents,10*coupon.discount_percent);
    const again=await db.query('select public.ld_reserve_coupon($1,$2,$3) as data',[ids[0],order1,coupon.code]);assert.equal(again.rows[0].data.expires_at,coupon.expires_at);
    await assert.rejects(db.query('select public.ld_reserve_coupon($1,$2,$3)',[ids[0],order2,coupon.code]),/COUPON_UNAVAILABLE/);
    await assert.rejects(db.query('select public.ld_reserve_coupon($1,$2,$3)',[ids[1],order2,coupon.code]),/INVALID_ORDER/);

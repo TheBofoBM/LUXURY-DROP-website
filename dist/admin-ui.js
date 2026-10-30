@@ -1,5 +1,5 @@
 import * as service from './welcome-service.js';
-import {countdown} from './welcome-model.js';
+import {countdown,couponLabel,couponDiscountCents} from './welcome-model.js';
 const $=s=>document.querySelector(s);
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=cents=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(cents/100);
@@ -24,14 +24,14 @@ function renderResult(){
   $('#admin-redeem').hidden=true;
   if(!result?.found){$('#admin-result').innerHTML='<div class="admin-verdict invalid"><strong>Código no encontrado</strong><p>Revisa que esté completo y que corresponda a Luxury Drop.</p></div>';return;}
   const c=result.coupon;const status=result.status;const valid=result.can_redeem;
-  $('#admin-result').innerHTML=`<article class="admin-verdict ${valid?'valid':'invalid'}"><div class="admin-verdict-head"><strong>${labels[status]||'No disponible'}</strong><span>${money(c.amount_cents)}</span></div><code>${escape(c.code)}</code><dl><div><dt>Cliente</dt><dd>${escape(result.customer_email||'Cuenta sin correo')}</dd></div><div><dt>Vigencia hasta</dt><dd>${escape(date(c.expires_at))} · CDMX</dd></div>${valid?'<div><dt>Tiempo restante</dt><dd id="admin-countdown">'+countdown(c.expires_at,Date.now()+clockOffset)+'</dd></div>':''}</dl>${result.sale?`<p class="admin-used-detail">Canje registrado el ${escape(date(result.sale.recorded_at))}.<br>Descuento aplicado: <strong>${money(result.sale.discount_cents)}</strong> · ${result.sale.method==='cash'?'Efectivo':result.sale.method==='transfer'?'Transferencia':'Venta registrada'}${result.sale.reference?'<br>Folio: '+escape(result.sale.reference):''}</p>`:''}</article>`;
+  $('#admin-result').innerHTML=`<article class="admin-verdict ${valid?'valid':'invalid'}"><div class="admin-verdict-head"><strong>${labels[status]||'No disponible'}</strong><span>${escape(couponLabel(c))}</span></div><code>${escape(c.code)}</code><dl><div><dt>Cliente</dt><dd>${escape(result.customer_email||'Cuenta sin correo')}</dd></div><div><dt>Vigencia hasta</dt><dd>${escape(date(c.expires_at))} · CDMX</dd></div>${valid?'<div><dt>Tiempo restante</dt><dd id="admin-countdown">'+countdown(c.expires_at,Date.now()+clockOffset)+'</dd></div>':''}</dl>${result.sale?`<p class="admin-used-detail">Canje registrado el ${escape(date(result.sale.recorded_at))}.<br>Descuento aplicado: <strong>${money(result.sale.discount_cents)}</strong> · ${result.sale.method==='cash'?'Efectivo':result.sale.method==='transfer'?'Transferencia':'Venta registrada'}${result.sale.reference?'<br>Folio: '+escape(result.sale.reference):''}</p>`:''}</article>`;
   $('#admin-redeem').hidden=!valid;calculation();
 }
 function calculation(){
   const amount=Number($('#admin-subtotal').value);const subtotal=Math.round(amount*100);
   if(!result?.can_redeem||!$('#admin-subtotal').value||!Number.isFinite(amount)||subtotal<=0){$('#admin-calculation').textContent='Introduce el importe para calcular el descuento y el total.';return;}
-  const discount=Math.min(subtotal,result.coupon.amount_cents);
-  $('#admin-calculation').innerHTML=`<div><span>Productos</span><strong>${money(subtotal)}</strong></div><div><span>Descuento aplicable</span><strong>− ${money(discount)}</strong></div><div><span>Total acordado con el cliente</span><strong>${money(subtotal-discount)}</strong></div>`;
+  const discount=couponDiscountCents(subtotal,result.coupon);
+  $('#admin-calculation').innerHTML=`<div><span>Productos</span><strong>${money(subtotal)}</strong></div><div><span>Descuento ${escape(couponLabel(result.coupon))}</span><strong>− ${money(discount)}</strong></div><div><span>Total acordado con el cliente</span><strong>${money(subtotal-discount)}</strong></div>`;
 }
 async function lookup(code){
   if(busy||!service.currentAdmin())return;const sequence=++searchSequence;

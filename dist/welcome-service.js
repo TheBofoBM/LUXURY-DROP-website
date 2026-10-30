@@ -1,5 +1,5 @@
 import {authConfig} from './config.js';
-import {choosePrize,welcomeDuration} from './welcome-model.js';
+import {choosePrize,welcomeDuration,welcomePrizes,couponDiscountCents} from './welcome-model.js';
 
 const configured=Boolean(authConfig.supabaseUrl&&authConfig.supabasePublishableKey);
 const storeKey='ld-welcome-preview-v1';
@@ -13,7 +13,7 @@ export const currentUser=()=>user;
 export const currentAdmin=()=>Boolean(user&&admin);
 export const currentWelcome=()=>accountState;
 function previewRead(){try{return JSON.parse(localStorage.getItem(storeKey)||'null');}catch{return null;}}
-function previewState(){const saved=previewRead();const c=saved?.coupon;const valid=c&&typeof c.code==='string'&&Number.isFinite(Date.parse(c.expires_at))&&[5000,10000,15000,20000,30000,40000].includes(c.amount_cents);return {coupon:valid?c:null,eligible:!valid};}
+function previewState(){const saved=previewRead();const c=saved?.coupon;const valid=c&&typeof c.code==='string'&&Number.isFinite(Date.parse(c.expires_at))&&(c.discount_percent!=null?welcomePrizes.includes(c.discount_percent):[5000,10000,15000,20000,30000,40000].includes(c.amount_cents));return {coupon:valid?c:null,eligible:!valid};}
 function setState(data){accountState={coupon:data.coupon||null,eligible:!!data.eligible};if(data.server_now)offset=Date.parse(data.server_now)-Date.now();listener();}
 export function errorMessage(error) {
   const text=error?.message||'';
@@ -81,7 +81,7 @@ export async function claimCoupon() {
     const saved=previewState();if(saved.coupon){setState(saved);return saved.coupon;}
     const random=new Uint32Array(1);crypto.getRandomValues(random);
     const issued=new Date().toISOString();
-    const coupon={id:crypto.randomUUID(),code:'LD-DEMO-'+crypto.randomUUID().replaceAll('-','').slice(0,16).toUpperCase(),amount_cents:choosePrize(random[0]/4294967296)*100,status:'available',issued_at:issued,expires_at:new Date(Date.parse(issued)+welcomeDuration).toISOString(),preview:true};
+    const coupon={id:crypto.randomUUID(),code:'LD-DEMO-'+crypto.randomUUID().replaceAll('-','').slice(0,16).toUpperCase(),amount_cents:null,discount_percent:choosePrize(random[0]/4294967296),status:'available',issued_at:issued,expires_at:new Date(Date.parse(issued)+welcomeDuration).toISOString(),preview:true};
     // Local preview only. Live issuance and race protection always run in Postgres.
     localStorage.setItem(storeKey,JSON.stringify({coupon}));setState({coupon,eligible:false});return coupon;
   };
@@ -91,7 +91,7 @@ export async function claimCoupon() {
 const adminPreviewKey='ld-admin-preview-v1';
 function adminPreviewStore(){
   let data;try{data=JSON.parse(localStorage.getItem(adminPreviewKey)||'null');}catch{}
-  if(!data){const time=Date.now();const example=(code,status,issued)=>({id:crypto.randomUUID(),user_id:'preview-customer',code,amount_cents:20000,status,issued_at:new Date(issued).toISOString(),expires_at:new Date(issued+welcomeDuration).toISOString(),preview:true});
+  if(!data){const time=Date.now();const example=(code,status,issued)=>({id:crypto.randomUUID(),user_id:'preview-customer',code,amount_cents:null,discount_percent:25,status,issued_at:new Date(issued).toISOString(),expires_at:new Date(issued+welcomeDuration).toISOString(),preview:true});
     data={coupons:[example('LD-DEMO-VALIDO','available',time),example('LD-DEMO-VENCIDO','available',time-2*welcomeDuration),example('LD-DEMO-USADO','used',time-3600000)],sales:[]};localStorage.setItem(adminPreviewKey,JSON.stringify(data));}
   return data;
 }
@@ -110,7 +110,7 @@ export async function adminLookup(code){
 export function createAdminExample(){
   if(!isPreview||!currentAdmin())throw new Error('PREVIEW_DISABLED');
   const data=adminPreviewStore();const issued=Date.now();
-  const coupon={id:crypto.randomUUID(),user_id:'preview-customer',code:'LD-DEMO-'+crypto.randomUUID().replaceAll('-','').slice(0,16).toUpperCase(),amount_cents:20000,status:'available',issued_at:new Date(issued).toISOString(),expires_at:new Date(issued+welcomeDuration).toISOString(),preview:true};
+  const coupon={id:crypto.randomUUID(),user_id:'preview-customer',code:'LD-DEMO-'+crypto.randomUUID().replaceAll('-','').slice(0,16).toUpperCase(),amount_cents:null,discount_percent:25,status:'available',issued_at:new Date(issued).toISOString(),expires_at:new Date(issued+welcomeDuration).toISOString(),preview:true};
   data.coupons.unshift(coupon);localStorage.setItem(adminPreviewKey,JSON.stringify(data));return coupon.code;
 }
 export async function adminSales(){
@@ -131,7 +131,7 @@ export async function adminRedeem({code,subtotal,method,reference,requestId}){
     if(result.status==='expired')throw new Error('COUPON_EXPIRED');
     if(!result.can_redeem)throw new Error('COUPON_UNAVAILABLE');
     const redeemed={...result.coupon,status:'used',redeemed_at:new Date().toISOString()};
-    const discount=Math.min(subtotal,redeemed.amount_cents);
+    const discount=couponDiscountCents(subtotal,redeemed);
     data.sales.unshift({id:requestId,code,customer_email:result.customer_email,subtotal_cents:subtotal,discount_cents:discount,collected_cents:subtotal-discount,method,reference:reference||null,recorded_at:redeemed.redeemed_at,recorded_by:'Administrador de ejemplo'});
     data.coupons=data.coupons.map(c=>c.code===code?redeemed:c);
     if(previewRead()?.coupon?.code===code)localStorage.setItem(storeKey,JSON.stringify({coupon:redeemed}));

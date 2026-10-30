@@ -6,19 +6,20 @@ Este panel **no procesa pagos ni mueve dinero**. Consultas el cupón, acuerdas e
 
 En el pie de página del sitio, entrar en **Administración → Probar perfil administrador**. También existe un acceso dentro de **Mi perfil → Mi cuenta** cuando la sesión es administradora.
 
-Sin Supabase, el panel es una demostración, identificada como tal. Incluye códigos de ejemplo vencidos, usados y un ejemplo inicial de $200. Para repetir el recorrido, **Crear ejemplo vigente** genera otro código de prueba único, sin reactivar los ya usados. Los datos se conservan en ese navegador; no sirven para validar descuentos reales ni se sincronizan entre dispositivos.
+Sin Supabase, el panel es una demostración, identificada como tal. Incluye códigos de ejemplo vencidos, usados y un ejemplo inicial de 25%. Para repetir el recorrido, **Crear ejemplo vigente** genera otro código de prueba único, sin reactivar los ya usados. Los datos se conservan en ese navegador; no sirven para validar descuentos reales ni se sincronizan entre dispositivos.
 
 También puedes copiar el código `LD-DEMO-…` de un perfil cliente de ejemplo, entrar como administrador de prueba y consultarlo. Al registrar su canje, ese perfil de ejemplo lo verá utilizado. La demostración no permite convertir cupones de prueba en reales.
 
 ## Activar tu cuenta administradora real
 
-En el proyecto actual las tablas ya están aplicadas; no repetir las migraciones. Falta crear/verificar tu cuenta en **la tienda** y otorgarle el permiso privado. Ver [estado de Supabase](ESTADO-SUPABASE.md).
+En el proyecto actual las migraciones y la cuenta administradora del propietario ya están aplicadas; no repetirlas. Los pasos siguientes sirven para un proyecto nuevo o para otra cuenta autorizada. Ver [estado de Supabase](ESTADO-SUPABASE.md).
 
 1. Crear y conectar Supabase siguiendo `ACTIVAR-CUENTAS-Y-CUPONES.md`.
-2. En SQL Editor, ejecutar **en orden** ambas migraciones:
+2. En SQL Editor, ejecutar **en orden** las tres migraciones:
    - `supabase/migrations/202610270001_welcome_coupons.sql`
    - `supabase/migrations/202610270002_manual_admin.sql`
-   Si ya se aplicó la primera, ejecutar únicamente la segunda. Cada migración se aplica una vez.
+   - `supabase/migrations/202610300003_percentage_welcome.sql`
+   Ejecutar únicamente las pendientes. Cada migración se aplica una vez.
 3. Registrarte en Luxury Drop con el correo o Google que usarás para administrar. Verificar el correo e iniciar sesión.
 4. Desde el **SQL Editor privado del propietario en Supabase**, reemplazar `TU_CORREO` y ejecutar:
 
@@ -41,7 +42,7 @@ Para retirar acceso a una cuenta, el propietario puede eliminar su fila de `ld_a
 1. El cliente te comparte su código desde **Perfil → Cupones**.
 2. Pegarlo en **Administración → Validar cupón → Consultar**.
 3. Revisar el cliente asociado, descuento, vigencia y estado. Un código encontrado no significa automáticamente que pueda usarse: debe indicar **Válido para canjear**.
-4. Verificar que el cupón pertenece al cliente y acordar el descuento. Introducir el importe de productos **antes** del descuento. El panel calcula cuánto se aplica y cuánto corresponde cobrar; nunca crea saldo a favor ni combina descuentos.
+4. Verificar que el cupón pertenece al cliente y acordar el descuento. Introducir el importe de productos **antes** del descuento. El panel muestra el porcentaje guardado y calcula cuánto descontar sobre todas las prendas de la venta y cuánto corresponde cobrar; nunca crea saldo a favor ni combina descuentos.
 5. Seleccionar **Efectivo** o **Transferencia**. El folio interno de venta es opcional; no es necesario guardar datos bancarios.
 6. Confirmar la venta y el cobro acordado, marcar la casilla y pulsar **Registrar canje y marcar como usado**.
 7. Esperar el mensaje **Canje confirmado** antes de considerar consumido el cupón. Consultarlo otra vez mostrará que ya está utilizado.
@@ -60,3 +61,5 @@ El historial muestra los últimos 20 canjes: código, cliente, descuento, import
 - El registro utiliza `ld_orders` como comprobante interno de una venta ya confirmada manualmente. `provider_payment_id` contiene una referencia interna `manual:<UUID>`; **no implica conexión con un proveedor de pagos**.
 
 Las pruebas automatizadas ejecutan ambas migraciones en PostgreSQL embebido y cubren permisos, intento de autoasignarse rol, códigos vencidos/reservados, consulta por administrador, canje por efectivo/transferencia, reintentos, un segundo administrador y actualización del perfil cliente. Al activar Supabase, comprobar también dos sesiones administrativas reales enviando la confirmación al mismo tiempo. La vista previa local no ofrece esas garantías comerciales.
+
+Los cupones nuevos son porcentuales: un 25% descuenta $800 de $3,200. El porcentaje y el subtotal completo determinan el importe; no existe un tope de $400. Los cupones antiguos de importe fijo se identifican con MXN y mantienen su monto original. No se alteran descuentos ni historial de ventas ya registradas.

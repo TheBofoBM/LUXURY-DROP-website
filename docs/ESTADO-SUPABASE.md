@@ -6,21 +6,24 @@ URL pública de API: `https://mtprghhunykhxcnvldza.supabase.co`.
 
 ## Hecho
 
-- Las dos migraciones del repositorio se ejecutaron desde SQL Editor en el proyecto alojado. No volver a ejecutarlas sobre esta misma base de datos.
+- Las tres migraciones del repositorio se ejecutaron desde SQL Editor en el proyecto alojado. No volver a ejecutarlas sobre esta misma base de datos.
 - Se verificaron las tablas `ld_accounts`, `ld_coupons`, `ld_orders` y `ld_admins`, todas con RLS activado.
 - Site URL y único retorno permitido: `https://thebofobm.github.io/LUXURY-DROP-website/`.
 - Clave **publicable** del proyecto configurada en el frontend. No contiene claves privadas de servidor ni contraseñas de base de datos.
 - Email Auth y altas de usuarios habilitados; Google todavía deshabilitado.
 - Acceso configurado con **enlace de un solo uso**, tal como aparece en la plantilla predeterminada de Supabase.
 - Se comprobó que una solicitud anónima no puede leer cupones ni ejecutar la comprobación de administrador (HTTP 401).
-- Las 18 pruebas de reglas/permisos en PostgreSQL embebido siguen pasando. No sustituyen las pruebas de acceso real por correo ni la concurrencia del proyecto alojado.
+- Las 27 pruebas de reglas/permisos en PostgreSQL embebido siguen pasando. No sustituyen las pruebas de acceso real por correo ni la concurrencia del proyecto alojado.
 
-## Siguiente paso: tu cuenta administradora
+## Cuenta administradora y promoción activa
 
-1. En la tienda publicada, abrir el perfil e introducir el mismo correo de la cuenta propietaria del equipo de Supabase.
-2. Solicitar un enlace y abrirlo con **el mismo navegador** donde se solicitó. Si el correo abre otro navegador, copiar su enlace al navegador original. La protección PKCE necesita el verificador guardado allí.
-3. Una vez creada/verificada la cuenta de la tienda, autorizarla como administradora usando su identidad real, según `ADMINISTRACION.md`. Iniciar sesión en el panel de Supabase no crea automáticamente una cuenta en la tienda.
-4. Probar acceso al perfil y al panel. Cualquier giro con descuento real debe realizarlo el propietario, sin tratarlo como datos ficticios.
+La cuenta propietaria de la tienda ya está verificada y autorizada como administradora mediante `ld_admins`. No se publican su correo ni su identificador en este documento. En la tienda, iniciar sesión y abrir **Administración**; actualizar la página después de cambios de permisos.
+
+La migración `202610300003_percentage_welcome.sql` se aplicó el 30 de octubre de 2026. Los nuevos premios son **5%, 10%, 15%, 20% y 25%**, con probabilidades **5%, 10%, 15%, 25% y 45%**. Se calculan sobre todas las prendas de la primera compra, sin envío y sin tope en pesos. Un 25% de $3,200 son $800. Los cupones anteriores conservan importe, código, vigencia e historial; no se habilita otro giro.
+
+Las pruebas verifican cálculos, redondeo, las 10,000 posiciones de la distribución, migración con cupones ya emitidos, permisos, caducidad, primer pedido y canje idempotente. En producción se verificó la distribución con una consulta de solo lectura, sin emitir ni canjear premios reales. Los giros y canjes reales de prueba debe realizarlos el propietario.
+
+Para entrar por correo, solicitar un enlace y abrirlo con el mismo navegador donde se solicitó: la protección PKCE necesita el verificador guardado allí.
 
 ## Antes de registrar clientes externos
 

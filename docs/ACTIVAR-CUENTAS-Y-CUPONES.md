@@ -8,7 +8,7 @@ El frontend permanece en GitHub Pages. Supabase aporta Auth (correo y Google) y 
 
 1. Crear un proyecto en https://supabase.com/dashboard con tu cuenta de propietario.
 2. Guardar la contraseña de la base de datos de forma privada.
-3. En SQL Editor, ejecutar una vez y en orden `supabase/migrations/202610270001_welcome_coupons.sql` y `supabase/migrations/202610270002_manual_admin.sql`. Si la primera ya se aplicó, ejecutar solo la segunda. Ambas se ejecutan dentro de una transacción.
+3. En un proyecto nuevo, ejecutar una vez y en orden las tres migraciones: `202610270001_welcome_coupons.sql`, `202610270002_manual_admin.sql` y `202610300003_percentage_welcome.sql`, dentro de `supabase/migrations/`. En un proyecto existente, aplicar únicamente las pendientes. Cada archivo se ejecuta dentro de una transacción.
 4. En Authentication → URL Configuration, configurar Site URL y una Redirect URL permitida exactamente como `https://thebofobm.github.io/LUXURY-DROP-website/` (incluye la barra final).
 
 ## 2. Acceso por correo
@@ -54,7 +54,7 @@ También es posible editar `dist/config.js` directamente con los dos parámetros
 - El canje manual bloquea la fila de la cuenta y del cupón dentro de una transacción. Dos administradores no pueden consumir el mismo código. Un fallo revierte la operación completa.
 - El derecho se limita a una cuenta sin compras pagadas. No identifica a una misma persona que use cuentas con correos diferentes; esto necesitaría reglas antifraude adicionales antes del lanzamiento.
 
-Probabilidades propuestas, modificables en el SQL antes de activar la campaña: $50 (35%), $100 (30%), $150 (20%), $200 (10%), $300 (4%), $400 MXN (1%). El frontend muestra las mismas condiciones. Sin compra mínima propuesta, sin acumular descuentos, sin saldo a favor ni efectivo. El descuento se limita al subtotal de productos.
+Premios nuevos y probabilidades: 5% de descuento (5%), 10% (10%), 15% (15%), 20% (25%) y 25% (45%). PostgreSQL genera el porcentaje; el navegador no puede elegirlo. El porcentaje se calcula sobre el subtotal completo de prendas, sin tope en pesos, sin envío, sin compra mínima y sin acumular descuentos. Se redondea al centavo una sola vez. Los cupones anteriores de importe fijo conservan su valor y vencimiento; se mantiene la misma campaña para impedir un segundo giro. Las pruebas verifican las 10,000 posiciones posibles contra la distribución del frontend.
 
 ## 6. Ventas manuales: efectivo o transferencia
 
@@ -62,7 +62,7 @@ El carrito muestra una previsualización; copiar, ver o aplicar un cupón en esa
 
 Una vez conectado Supabase, habilitar de forma privada tu cuenta administradora según [ADMINISTRACION.md](ADMINISTRACION.md). Desde **Administración** podrás consultar un código y registrar su canje cuando confirmes personalmente la venta. El panel calcula el descuento, conserva un historial y marca el código como utilizado, sin mover dinero.
 
-La operación real queda lista al aplicar ambas migraciones, configurar Auth y otorgar el permiso de administrador. Las funciones anteriores de reserva/pago se conservan por compatibilidad; el flujo actual no depende de pasarelas ni webhooks.
+La operación real queda lista al aplicar las tres migraciones, configurar Auth y otorgar el permiso de administrador. Las funciones anteriores de reserva/pago se conservan por compatibilidad; el flujo actual no depende de pasarelas ni webhooks.
 
 ## 7. Verificación antes de abrir al público
 

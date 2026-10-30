@@ -1,8 +1,7 @@
 import * as service from './welcome-service.js';
-import {welcomePrizes,couponStatus,countdown} from './welcome-model.js';
+import {welcomePrizes,couponStatus,countdown,couponLabel} from './welcome-model.js';
 const $=s=>document.querySelector(s);
 const escape=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const price=cents=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',maximumFractionDigits:0}).format(cents/100);
 let spinning=false,authBusy=false,notify=()=>{},authEmail='',rotation=0;
 function dialog(id){const d=$(id);if(!d.open)d.showModal();}
 function close(id){$(id).close();}
@@ -25,7 +24,7 @@ function renderWheel(){
   $('#spin').disabled=spinning||!service.currentUser()||!state.eligible;
   $('#wheel-coupons').hidden=!c||spinning;
   $('#wheel-status').textContent=service.isPreview?'Vista previa · Este giro genera un cupón de ejemplo, sin valor de canje.':c?'Tu premio ya está guardado en Perfil → Cupones.':'Tu cuenta ya está lista. Descubre qué descuento te llevas.';
-  if(!spinning)$('#wheel-result').textContent=c?(status==='expired'?'Tu cupón de bienvenida ha vencido.':`Tu descuento: ${price(c.amount_cents)} MXN`):!state.eligible?'Esta bienvenida es exclusiva para tu primera compra.':'';
+  if(!spinning)$('#wheel-result').textContent=c?(status==='expired'?'Tu cupón de bienvenida ha vencido.':`Tu descuento: ${couponLabel(c)}`):!state.eligible?'Esta bienvenida es exclusiva para tu primera compra.':'';
 }
 function renderProfile(){
   const c=service.currentWelcome().coupon;const status=currentStatus();const user=service.currentUser();
@@ -34,11 +33,11 @@ function renderProfile(){
   $('#account-mode').textContent=service.isPreview?'Perfil de prueba guardado solo en este navegador. No es una cuenta real y sus cupones no se pueden canjear.':'Tu cuenta y tus cupones se guardan de forma segura. Tu sesión está activa.';
   $('#coupon-count').textContent=status==='available'?'1':'0';
   $('.profile-notice').hidden=status!=='available';
-  if(!c){$('#profile-coupons').innerHTML=`<div class="coupon-empty"><span aria-hidden="true">✳</span><h3>${service.currentWelcome().eligible?'Tu primer descuento te espera.':'Gracias por ser parte del drop.'}</h3><p>${service.currentWelcome().eligible?'Gira una vez y guarda hasta $400 MXN para tu primera compra.':'La ruleta de bienvenida está disponible antes de tu primera compra.'}</p>${service.currentWelcome().eligible?'<button id="profile-spin" class="button gold">Descubrir mi premio <span>↗</span></button>':''}</div>`;return;}
+  if(!c){$('#profile-coupons').innerHTML=`<div class="coupon-empty"><span aria-hidden="true">✳</span><h3>${service.currentWelcome().eligible?'Tu primer descuento te espera.':'Gracias por ser parte del drop.'}</h3><p>${service.currentWelcome().eligible?'Gira una vez y guarda hasta 25% de descuento para tu primera compra.':'La ruleta de bienvenida está disponible antes de tu primera compra.'}</p>${service.currentWelcome().eligible?'<button id="profile-spin" class="button gold">Descubrir mi premio <span>↗</span></button>':''}</div>`;return;}
   const labels={available:'Disponible',expired:'Vencido',reserved:'Reservado en un pedido',used:'Utilizado',voided:'Ya no aplica a tu primera compra'};
   const usable=status==='available';
   const date=new Date(c.expires_at).toLocaleString('es-MX',{dateStyle:'medium',timeStyle:'short',timeZone:'America/Mexico_City'});
-  $('#profile-coupons').innerHTML=`<p class="coupon-section-note">TU BIENVENIDA, GUARDADA AQUÍ.</p><article class="coupon-card ${usable?'':'coupon-inactive'}"><div class="coupon-card-head"><span>PRIMER DROP / BIENVENIDA</span><span class="coupon-badge">${labels[status]||'No disponible'}</span></div><div class="coupon-value">−${price(c.amount_cents)}<small>MXN</small></div><p class="coupon-purpose">Para tu primera compra. Solo para ti.</p><div class="coupon-cut" aria-hidden="true"></div><p class="coupon-code-label">TU CÓDIGO ${service.isPreview?'DE EJEMPLO':'PERSONAL'}</p><div class="coupon-code-row"><code>${escape(c.code)}</code><button id="copy-coupon" aria-label="Copiar código del cupón">Copiar</button></div><div class="coupon-expiry"><span>${usable?'Vence en':status==='reserved'?'Reservado; vigencia original':'Estado del cupón'}</span><strong id="coupon-countdown">${usable?countdown(c.expires_at,service.now()):labels[status]}</strong></div><p class="coupon-date">Vigencia hasta ${escape(date)} · hora de Ciudad de México</p></article>${usable?'<button id="use-coupon" class="button gold coupon-use">Ver descuento en mi bolsa <span>↗</span></button>':''}<p class="coupon-footer">${service.isPreview?'CUPÓN DE DEMOSTRACIÓN · No es canjeable.':'Personal e intransferible. Un solo uso. No acumulable con otras promociones.'}</p><button id="refresh-coupons" class="auth-secondary">Actualizar mis cupones</button>`;
+  $('#profile-coupons').innerHTML=`<p class="coupon-section-note">TU BIENVENIDA, GUARDADA AQUÍ.</p><article class="coupon-card ${usable?'':'coupon-inactive'}"><div class="coupon-card-head"><span>PRIMER DROP / BIENVENIDA</span><span class="coupon-badge">${labels[status]||'No disponible'}</span></div><div class="coupon-value">−${c.discount_percent!=null?escape(couponLabel(c)):escape(couponLabel(c).replace(' MXN',''))+'<small>MXN</small>'}</div><p class="coupon-purpose">${c.discount_percent!=null?'Sobre el total de prendas de tu primera compra, sin tope en pesos.':'Importe fijo emitido en la promoción anterior.'} Solo para ti.</p><div class="coupon-cut" aria-hidden="true"></div><p class="coupon-code-label">TU CÓDIGO ${service.isPreview?'DE EJEMPLO':'PERSONAL'}</p><div class="coupon-code-row"><code>${escape(c.code)}</code><button id="copy-coupon" aria-label="Copiar código del cupón">Copiar</button></div><div class="coupon-expiry"><span>${usable?'Vence en':status==='reserved'?'Reservado; vigencia original':'Estado del cupón'}</span><strong id="coupon-countdown">${usable?countdown(c.expires_at,service.now()):labels[status]}</strong></div><p class="coupon-date">Vigencia hasta ${escape(date)} · hora de Ciudad de México</p></article>${usable?'<button id="use-coupon" class="button gold coupon-use">Ver descuento en mi bolsa <span>↗</span></button>':''}<p class="coupon-footer">${service.isPreview?'CUPÓN DE DEMOSTRACIÓN · No es canjeable.':'Personal e intransferible. Un solo uso. No acumulable con otras promociones.'}</p><button id="refresh-coupons" class="auth-secondary">Actualizar mis cupones</button>`;
 }
 function updated(){
   renderProfile();renderWheel();
@@ -67,10 +66,11 @@ export async function setupWelcome(toast){
     if(spinning||!service.currentUser()||!service.currentWelcome().eligible)return;
     spinning=true;$('#spin').disabled=true;$('#wheel-result').textContent='Guardando tu premio…';
     try{
-      const coupon=await service.claimCoupon();const index=welcomePrizes.indexOf(coupon.amount_cents/100);
-      rotation+=2160+360-(index*60+30);$('#wheel').style.transform=`rotate(${rotation}deg)`;
-      const done=()=>{spinning=false;renderWheel();notify(`Tu cupón de ${price(coupon.amount_cents)} está en Perfil → Cupones`);};
-      if(matchMedia('(prefers-reduced-motion: reduce)').matches)done();else setTimeout(done,3550);
+      const coupon=await service.claimCoupon();const index=welcomePrizes.indexOf(coupon.discount_percent);
+      const target=(360-(index+0.5)*360/welcomePrizes.length)%360;
+      rotation+=2160+(target-rotation%360+360)%360;$('#wheel').style.transform=`rotate(${rotation}deg)`;
+      const done=()=>{spinning=false;renderWheel();notify(`Tu cupón de ${couponLabel(coupon)} está en Perfil → Cupones`);};
+      if(index<0||matchMedia('(prefers-reduced-motion: reduce)').matches)done();else setTimeout(done,3550);
     }catch(error){spinning=false;renderWheel();$('#wheel-result').textContent=service.errorMessage(error);}
   });
   $('#profile-coupons').addEventListener('click',async e=>{
