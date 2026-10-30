@@ -12,6 +12,8 @@ También puedes copiar el código `LD-DEMO-…` de un perfil cliente de ejemplo,
 
 ## Activar tu cuenta administradora real
 
+En el proyecto actual las tablas ya están aplicadas; no repetir las migraciones. Falta crear/verificar tu cuenta en **la tienda** y otorgarle el permiso privado. Ver [estado de Supabase](ESTADO-SUPABASE.md).
+
 1. Crear y conectar Supabase siguiendo `ACTIVAR-CUENTAS-Y-CUPONES.md`.
 2. En SQL Editor, ejecutar **en orden** ambas migraciones:
    - `supabase/migrations/202610270001_welcome_coupons.sql`

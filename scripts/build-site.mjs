@@ -4,6 +4,9 @@ import {fileURLToPath} from 'node:url';
 import {resolve,sep} from 'node:path';
 import {authConfig} from '../dist/config.js';
 const config={...authConfig};
+config.emailMode=process.env.SUPABASE_EMAIL_MODE||config.emailMode||'magiclink';
+config.emailDelivery=process.env.SUPABASE_EMAIL_DELIVERY||config.emailDelivery||'team-only';
+if(!['magiclink','otp'].includes(config.emailMode)||!['team-only','public'].includes(config.emailDelivery))throw new Error('Configuración de correo no válida.');
 if(process.env.SUPABASE_URL||process.env.SUPABASE_PUBLISHABLE_KEY){
   config.supabaseUrl=process.env.SUPABASE_URL||'';
   config.supabasePublishableKey=process.env.SUPABASE_PUBLISHABLE_KEY||'';

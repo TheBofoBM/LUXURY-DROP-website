@@ -6,6 +6,8 @@ const storeKey='ld-welcome-preview-v1';
 let client=null,user=null,offset=0,accountState={coupon:null,eligible:true},listener=()=>{},previewSignedIn=false,admin=false;
 export const isPreview=!configured;
 export const hasGoogle=configured&&authConfig.googleEnabled;
+export const emailMode=authConfig.emailMode==='otp'?'otp':'magiclink';
+export const emailDelivery=authConfig.emailDelivery||'team-only';
 export const now=()=>Date.now()+offset;
 export const currentUser=()=>user;
 export const currentAdmin=()=>Boolean(user&&admin);
@@ -15,6 +17,8 @@ function previewState(){const saved=previewRead();const c=saved?.coupon;const va
 function setState(data){accountState={coupon:data.coupon||null,eligible:!!data.eligible};if(data.server_now)offset=Date.parse(data.server_now)-Date.now();listener();}
 export function errorMessage(error) {
   const text=error?.message||'';
+  if(error?.code==='email_address_not_authorized'||text.toLowerCase().includes('email address not authorized'))return 'El envío de correo todavía está limitado al equipo de la tienda. El registro público está en preparación.';
+  if(error?.code==='over_email_send_rate_limit')return 'Se alcanzó el límite temporal de correos de prueba. Espera antes de solicitar otro enlace.';
   if(text.includes('FIRST_PURCHASE_ONLY'))return 'Esta promoción es exclusiva para cuentas sin compras anteriores.';
   if(text.includes('VERIFIED_EMAIL_REQUIRED'))return 'Confirma tu correo antes de girar.';
   if(text.includes('ADMIN_REQUIRED'))return 'Esta cuenta no tiene permisos de administrador.';
@@ -56,6 +60,7 @@ export async function previewAdminSignIn(){if(!isPreview)throw new Error('PREVIE
 export async function sendEmail(email) {
   if(!client)throw new Error('AUTH_UNAVAILABLE');
   const {error}=await client.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:new URL('./',location.href).href}});if(error)throw error;
+  try{sessionStorage.setItem('ld-auth-intent','spin');}catch{}
 }
 export async function verifyEmail(email,token) {
   const {data,error}=await client.auth.verifyOtp({email,token,type:'email'});if(error)throw error;

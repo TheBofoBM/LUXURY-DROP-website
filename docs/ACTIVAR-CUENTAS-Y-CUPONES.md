@@ -1,5 +1,7 @@
 # Activar cuentas y cupones reales
 
+**El proyecto actual ya tiene las tablas y la conexión configuradas.** Consultar [ESTADO-SUPABASE.md](ESTADO-SUPABASE.md) antes de ejecutar SQL. Los pasos de creación siguientes sirven como referencia para un proyecto nuevo.
+
 El frontend permanece en GitHub Pages. Supabase aporta Auth (correo y Google) y PostgreSQL. Mientras falten sus dos valores públicos, el sitio funciona como **vista previa**: no pide datos personales, ofrece un perfil de ejemplo y emite códigos `LD-DEMO-…` sin valor de canje. Esa simulación se almacena en este navegador; no ofrece seguridad, sincronización entre dispositivos ni canje real.
 
 ## 1. Crear el proyecto
@@ -12,9 +14,9 @@ El frontend permanece en GitHub Pages. Supabase aporta Auth (correo y Google) y 
 ## 2. Acceso por correo
 
 1. Habilitar Email en los proveedores de Authentication.
-2. En Email Templates → Magic Link, incluir `{{ .Token }}` en el cuerpo. Por ejemplo: `<p>Tu código de acceso a Luxury Drop es: <strong>{{ .Token }}</strong></p>`. El frontend usa OTP; no solicita contraseña ni depende de un enlace en otra pestaña.
-3. La persona introduce su correo, recibe un código y lo confirma. El correo debe quedar verificado antes del giro.
-4. Antes de abrir el registro al público, configurar un proveedor SMTP propio y probar recepción, caducidad y límites de envío. El correo incluido por Supabase para desarrollo tiene restricciones; no es el envío comercial definitivo.
+2. La configuración actual usa la plantilla predeterminada **con enlace de acceso** (`emailMode: 'magiclink'`). El cliente introduce su correo y abre el enlace con el mismo navegador para completar PKCE; no crea una contraseña.
+3. El correo debe quedar verificado antes del giro. El servicio predeterminado permite pruebas con las direcciones del equipo, no el registro público de clientes.
+4. Antes de abrir el registro al público, configurar SMTP propio y probar recepción, caducidad y límites de envío. Supabase exige SMTP propio para personalizar la plantilla. Si se prefiere un código, incluir `{{ .Token }}` en su cuerpo y cambiar a `emailMode: 'otp'`. Mantener el modo de la web y la plantilla sincronizados.
 
 Referencia: https://supabase.com/docs/guides/auth/auth-email-templates
 
@@ -33,6 +35,8 @@ En el repositorio → Settings → Secrets and variables → Actions → **Varia
 | `SUPABASE_URL` | URL HTTPS del proyecto |
 | `SUPABASE_PUBLISHABLE_KEY` | Clave publicable (`sb_publishable_…`) o la clave legacy `anon` |
 | `SUPABASE_GOOGLE_ENABLED` | `true` únicamente si Google ya está habilitado; en otro caso `false` |
+| `SUPABASE_EMAIL_MODE` | `magiclink` para enlace o `otp` cuando la plantilla envía código |
+| `SUPABASE_EMAIL_DELIVERY` | `team-only` para el servicio de pruebas o `public` después de configurar y probar SMTP |
 
 Son parámetros públicos del cliente. El build rechaza claves `sb_secret_…` y JWT con rol distinto de `anon`. **Nunca colocar `service_role`, secretos de Google o claves de pagos en el frontend, config.js, variables públicas o archivos del repositorio.**
 

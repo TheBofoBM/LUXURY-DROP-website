@@ -31,6 +31,8 @@ jobs:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
           SUPABASE_GOOGLE_ENABLED: ${{ vars.SUPABASE_GOOGLE_ENABLED }}
+          SUPABASE_EMAIL_MODE: ${{ vars.SUPABASE_EMAIL_MODE }}
+          SUPABASE_EMAIL_DELIVERY: ${{ vars.SUPABASE_EMAIL_DELIVERY }}
       - name: Verificar código y archivos estáticos
         run: npm run check
       - name: Probar promociones e inventario
@@ -64,6 +66,8 @@ jobs:
           SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
           SUPABASE_GOOGLE_ENABLED: ${{ vars.SUPABASE_GOOGLE_ENABLED }}
+          SUPABASE_EMAIL_MODE: ${{ vars.SUPABASE_EMAIL_MODE }}
+          SUPABASE_EMAIL_DELIVERY: ${{ vars.SUPABASE_EMAIL_DELIVERY }}
       - name: Preparar archivos estáticos
         uses: actions/upload-pages-artifact@v4
         with:

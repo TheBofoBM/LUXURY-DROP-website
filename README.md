@@ -8,6 +8,8 @@ Tienda de demostración preparada para **GitHub Pages**, con catálogo, tallas, 
 
 **Repositorio:** https://github.com/TheBofoBM/LUXURY-DROP-website
 
+**Estado actual:** [Supabase conectado; acceso por correo para pruebas del equipo y activación de administrador pendiente](docs/ESTADO-SUPABASE.md). Para clientes externos falta configurar SMTP. No se necesita una pasarela de pagos para los canjes manuales.
+
 ## Publicación en GitHub Pages
 
 1. En el repositorio, abrir **Settings → Pages**.
@@ -76,7 +78,7 @@ La primera vez ejecutar `npm ci` y `npm run build` antes de `npm run check`. Las
 
 ## Estado comercial y créditos
 
-Productos, fotografías, precios, tallas e inventario son ilustrativos. Sin Supabase configurado, los perfiles (incluido el administrador) son de ejemplo y los códigos `LD-DEMO-…` no son canjeables en ventas reales. El SQL y la integración están preparados; falta conectar Supabase y asignar tu cuenta administradora. El canje manual no procesa pagos: tú confirmas la venta fuera del sitio.
+Productos, fotografías, precios, tallas e inventario son ilustrativos. Supabase ya está conectado y las tablas están aplicadas; falta verificar tu cuenta en la tienda, asignar tu permiso de administrador y configurar SMTP para el registro público. Los códigos `LD-DEMO-…` de la versión anterior no son válidos en la base de datos real. El canje manual no procesa pagos: tú confirmas la venta fuera del sitio.
 
 Logo proporcionado por Luxury Drop. Fotografías de referencia de Unsplash; sus enlaces están en los créditos del sitio. Tipografías Barlow Condensed y DM Sans mediante Google Fonts.
 

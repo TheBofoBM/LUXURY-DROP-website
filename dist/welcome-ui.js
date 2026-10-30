@@ -44,11 +44,13 @@ function updated(){
   renderProfile();renderWheel();
   window.dispatchEvent(new CustomEvent('ld:welcome-updated'));
 }
-async function authenticated(){close('#welcome-dialog');authEmail='';$('#email-form').hidden=false;$('#otp-form').hidden=true;$('#auth-status').textContent='';let adminIntent=false;try{adminIntent=sessionStorage.getItem('ld-admin-intent')==='1';}catch{}if(adminIntent){window.dispatchEvent(new CustomEvent('ld:admin-authenticated'));return;}showWheel();}
+async function authenticated(){close('#welcome-dialog');authEmail='';$('#email-form').hidden=false;$('#otp-form').hidden=true;$('#magiclink-panel').hidden=true;$('#auth-status').textContent='';let adminIntent=false;try{adminIntent=sessionStorage.getItem('ld-admin-intent')==='1';}catch{}if(adminIntent){window.dispatchEvent(new CustomEvent('ld:admin-authenticated'));return;}showWheel();}
 async function authTask(task){if(authBusy)return;authBusy=true;document.querySelectorAll('#auth-live button,#preview-signin').forEach(b=>b.disabled=true);try{await task();}catch(error){$('#auth-status').textContent=service.errorMessage(error);}finally{authBusy=false;document.querySelectorAll('#auth-live button,#preview-signin').forEach(b=>b.disabled=false);}}
 export async function setupWelcome(toast){
   notify=toast;
   $('#auth-preview').hidden=!service.isPreview;$('#auth-live').hidden=service.isPreview;$('#google-signin').hidden=!service.hasGoogle;
+  if(service.emailMode==='magiclink')$('#email-submit').innerHTML='Recibir enlace de acceso <span>↗</span>';
+  $('#email-delivery-note').hidden=service.emailDelivery!=='team-only';
   ['welcome-banner','rewards-register','profile-open'].forEach(id=>$('#'+id).addEventListener('click',showWelcome));
   $('#wheel-open').addEventListener('click',showWheel);
   $('#wheel-coupons').addEventListener('click',showProfile);
@@ -56,9 +58,10 @@ export async function setupWelcome(toast){
   $('#welcome-terms').addEventListener('click',()=>$('#terms-open').click());
   $('#preview-signin').addEventListener('click',()=>authTask(async()=>{await service.previewSignIn();await authenticated();}));
   $('#google-signin').addEventListener('click',()=>authTask(async()=>{try{sessionStorage.setItem('ld-auth-intent','spin');}catch{}await service.googleSignIn();}));
-  $('#email-form').addEventListener('submit',e=>{e.preventDefault();authTask(async()=>{authEmail=$('#welcome-email').value.trim();await service.sendEmail(authEmail);$('#email-form').hidden=true;$('#otp-form').hidden=false;$('#auth-status').textContent='Te enviamos un código. Revisa también tu carpeta de spam.';$('#welcome-otp').focus();});});
+  $('#email-form').addEventListener('submit',e=>{e.preventDefault();authTask(async()=>{authEmail=$('#welcome-email').value.trim();await service.sendEmail(authEmail);$('#email-form').hidden=true;const link=service.emailMode==='magiclink';$('#otp-form').hidden=link;$('#magiclink-panel').hidden=!link;if(link){$('#magiclink-email').textContent=authEmail;$('#auth-status').textContent='Revisa tu correo y abre el enlace con este mismo navegador.';}else{$('#auth-status').textContent='Te enviamos un código. Revisa también tu carpeta de spam.';$('#welcome-otp').focus();}});});
   $('#otp-form').addEventListener('submit',e=>{e.preventDefault();authTask(async()=>{await service.verifyEmail(authEmail,$('#welcome-otp').value.trim());await authenticated();});});
-  $('#email-change').addEventListener('click',()=>{$('#email-form').hidden=false;$('#otp-form').hidden=true;$('#welcome-otp').value='';$('#auth-status').textContent='';$('#welcome-email').focus();});
+  function changeEmail(){$('#email-form').hidden=false;$('#otp-form').hidden=true;$('#magiclink-panel').hidden=true;$('#welcome-otp').value='';$('#auth-status').textContent='';$('#welcome-email').focus();}
+  $('#email-change').addEventListener('click',changeEmail);$('#magiclink-change').addEventListener('click',changeEmail);
   $('#welcome-dialog').addEventListener('close',()=>{try{sessionStorage.setItem('ld-welcome-seen-v2','1');}catch{}});
   $('#spin').addEventListener('click',async()=>{
     if(spinning||!service.currentUser()||!service.currentWelcome().eligible)return;
