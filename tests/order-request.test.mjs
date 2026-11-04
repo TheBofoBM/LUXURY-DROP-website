@@ -29,7 +29,7 @@ test('order inquiry rejects an empty selection and removes old items, invalid si
  assert.throws(()=>createOrderRequest([]),/EMPTY_CART/);
  assert.throws(()=>createOrderRequest([{id:'jacket',size:'M',qty:1}]),/EMPTY_CART/);
  const order=createOrderRequest([...one,{id:'boss-navy',size:'M',qty:8},{id:'hugo-black',size:'L',qty:1}]);
- assert.deepEqual(order.lines,one);assert.equal(order.subtotal,1499);
+ assert.deepEqual(order.lines,[{id:'boss-navy',size:'M',qty:5}]);assert.equal(order.subtotal,7495);assert.match(order.text,/Bajo pedido/);
 });
 
 test('legacy fixed coupons keep their amount and links encode accents, symbols and line breaks safely',()=>{

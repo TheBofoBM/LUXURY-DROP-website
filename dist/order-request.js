@@ -25,7 +25,7 @@ export function createOrderRequest(cart,{coupon=null,now=Date.now()}={}){
   const text=[
     'Hola, quiero hacer un pedido en LUXURY DROP.',
     '',
-    ...lines.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty} × ${p.name} · ${p.detail} · Talla ${l.size} — ${money(p.price*l.qty)} MXN`;}),
+    ...lines.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty} × ${p.name} · ${p.detail} · Talla ${l.size}${p.fulfillment==='on-request'?' · Bajo pedido':''} — ${money(p.price*l.qty)} MXN`;}),
     '',
     `Subtotal de prendas: ${money(t.subtotal)} MXN`,
     `${promotion} — ahorro ${money(discount)} MXN`,
