@@ -12,7 +12,7 @@ test('private administrator validation and atomic offline redemption',async t=>{
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     grant usage on schema auth to authenticated,anon;
     grant execute on function auth.uid() to authenticated,anon;`);
-  for(const file of ['202610270001_welcome_coupons.sql','202610270002_manual_admin.sql','202610300003_percentage_welcome.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
+  for(const file of ['202610270001_welcome_coupons.sql','202610270002_manual_admin.sql','202610300003_percentage_welcome.sql','202611030004_welcome_odds_75.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
   const [admin,admin2,client,expiredClient,reservedClient,smallClient]=[1,2,3,4,5,6].map(n=>`20000000-0000-4000-8000-${String(n).padStart(12,'0')}`);
   for(const id of [admin,admin2,client,expiredClient,reservedClient,smallClient])await db.query('insert into auth.users(id,email,email_confirmed_at) values($1,$2,now())',[id,id.slice(-1)+'@example.test']);
   await db.query('insert into public.ld_admins(user_id) values($1),($2)',[admin,admin2]);

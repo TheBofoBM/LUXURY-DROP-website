@@ -1,5 +1,5 @@
 export const welcomePrizes = [5,10,15,20,25];
-export const welcomeWeights = [5,10,15,25,45];
+export const welcomeWeights = [2,3,5,15,75];
 export const welcomeDuration = 24*60*60*1000;
 export function choosePrize(random) {
   let cumulative=0;

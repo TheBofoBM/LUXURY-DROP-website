@@ -86,7 +86,7 @@ Para vender se deberán definir inventario real, fotos, precios, canal de pedido
 
 ## Bienvenida por porcentaje
 
-Premios: **5%, 10%, 15%, 20% y 25%**; probabilidades respectivas **5%, 10%, 15%, 25% y 45%**. El mayor premio es el más probable. Un 25% sobre $1,600 ahorra $400; sobre $3,200 ahorra $800. No se acumula con otras promociones, no incluye envío y se redondea una sola vez al centavo sobre el subtotal completo.
+Premios: **5%, 10%, 15%, 20% y 25%**; probabilidades respectivas **2%, 3%, 5%, 15% y 75%**. El mayor premio es el más probable. Un 25% sobre $1,600 ahorra $400; sobre $3,200 ahorra $800. No se acumula con otras promociones, no incluye envío y se redondea una sola vez al centavo sobre el subtotal completo.
 
 La migración `supabase/migrations/202610300003_percentage_welcome.sql` se aplica después de las dos anteriores. Conserva los cupones de importe fijo y su historial; los nuevos giros generan porcentaje. La campaña y la restricción de un giro por cuenta permanecen: no se vuelve a sortear al actualizar el sitio.
 
@@ -105,3 +105,5 @@ El contacto público está en `dist/store-config.js`. Es un número internaciona
 El dueño confirma disponibilidad, descuento, entrega y pago en la conversación. Después de comprobar el cobro, registra el canje en Administración. Este flujo no mueve dinero, reserva inventario ni consume cupones. El registro público por correo sigue pendiente de SMTP; pedir por WhatsApp no exige iniciar sesión si no se aplica un cupón.
 
 El 3 de noviembre de 2026 se amplió a cinco el límite por modelo. Las tarjetas, el detalle y el mensaje de WhatsApp identifican las prendas como bajo pedido. Las solicitudes no descuentan inventario, y canjear un cupón no cambia existencias.
+
+La migración `202611030004_welcome_odds_75.sql` aumenta al 75% la probabilidad de ganar el premio de 25%, con efectos en giros futuros. Mantiene códigos, valor y vigencia de todos los cupones ya emitidos. No repetir migraciones aplicadas.

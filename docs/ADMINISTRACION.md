@@ -15,10 +15,11 @@ También puedes copiar el código `LD-DEMO-…` de un perfil cliente de ejemplo,
 En el proyecto actual las migraciones y la cuenta administradora del propietario ya están aplicadas; no repetirlas. Los pasos siguientes sirven para un proyecto nuevo o para otra cuenta autorizada. Ver [estado de Supabase](ESTADO-SUPABASE.md).
 
 1. Crear y conectar Supabase siguiendo `ACTIVAR-CUENTAS-Y-CUPONES.md`.
-2. En SQL Editor, ejecutar **en orden** las tres migraciones:
+2. En SQL Editor, ejecutar **en orden** las cuatro migraciones:
    - `supabase/migrations/202610270001_welcome_coupons.sql`
    - `supabase/migrations/202610270002_manual_admin.sql`
    - `supabase/migrations/202610300003_percentage_welcome.sql`
+   - `supabase/migrations/202611030004_welcome_odds_75.sql`
    Ejecutar únicamente las pendientes. Cada migración se aplica una vez.
 3. Registrarte en Luxury Drop con el correo o Google que usarás para administrar. Verificar el correo e iniciar sesión.
 4. Desde el **SQL Editor privado del propietario en Supabase**, reemplazar `TU_CORREO` y ejecutar:

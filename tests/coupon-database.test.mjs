@@ -14,7 +14,7 @@ test('PostgreSQL coupon issuance, isolation, reservation and payment rules',asyn
     create function auth.uid() returns uuid language sql stable as $$ select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid $$;
     grant usage on schema auth to authenticated,anon;
     grant execute on function auth.uid() to authenticated,anon;`);
-  for(const file of ['202610270001_welcome_coupons.sql','202610270002_manual_admin.sql','202610300003_percentage_welcome.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
+  for(const file of ['202610270001_welcome_coupons.sql','202610270002_manual_admin.sql','202610300003_percentage_welcome.sql','202611030004_welcome_odds_75.sql'])await db.exec(await readFile(new URL('../supabase/migrations/'+file,import.meta.url),'utf8'));
   const ids=[1,2,3,4].map(n=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`);
   for(const id of ids)await db.query('insert into auth.users(id,email_confirmed_at) values($1,now())',[id]);
   const asUser=async id=>{await db.exec('reset role');await db.query("select set_config('request.jwt.claim.sub',$1,false)",[id]);await db.exec('set role authenticated');};

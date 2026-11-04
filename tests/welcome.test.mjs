@@ -15,8 +15,8 @@ test('largest percentage is the most likely prize, with disclosed exact distribu
  assert.equal(welcomeWeights.reduce((a,b)=>a+b,0),100);
  const counts=new Map(welcomePrizes.map(p=>[p,0]));
  for(let i=0;i<10000;i++)counts.set(choosePrize(i/10000),counts.get(choosePrize(i/10000))+1);
- assert.deepEqual([...counts.values()],[500,1000,1500,2500,4500]);
- assert.equal(choosePrize(.55),25);assert.equal(choosePrize(.99999),25);
+ assert.deepEqual([...counts.values()],[200,300,500,1500,7500]);
+ assert.equal(choosePrize(.2499),20);assert.equal(choosePrize(.25),25);assert.equal(choosePrize(.99999),25);
 });
 
 test('25% scales with all garments, has no $400 cap, and rounds to cents once',()=>{

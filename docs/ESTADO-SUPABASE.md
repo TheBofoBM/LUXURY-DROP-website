@@ -1,4 +1,4 @@
-# Estado de la conexión · 30 de octubre de 2026
+# Estado de la conexión · 3 de noviembre de 2026
 
 Proyecto: **Luxury Drop**, referencia `mtprghhunykhxcnvldza`.
 
@@ -6,20 +6,20 @@ URL pública de API: `https://mtprghhunykhxcnvldza.supabase.co`.
 
 ## Hecho
 
-- Las tres migraciones del repositorio se ejecutaron desde SQL Editor en el proyecto alojado. No volver a ejecutarlas sobre esta misma base de datos.
+- Las cuatro migraciones del repositorio se ejecutaron desde SQL Editor en el proyecto alojado. No volver a ejecutarlas sobre esta misma base de datos.
 - Se verificaron las tablas `ld_accounts`, `ld_coupons`, `ld_orders` y `ld_admins`, todas con RLS activado.
 - Site URL y único retorno permitido: `https://thebofobm.github.io/LUXURY-DROP-website/`.
 - Clave **publicable** del proyecto configurada en el frontend. No contiene claves privadas de servidor ni contraseñas de base de datos.
 - Email Auth y altas de usuarios habilitados; Google todavía deshabilitado.
 - Acceso configurado con **enlace de un solo uso**, tal como aparece en la plantilla predeterminada de Supabase.
 - Se comprobó que una solicitud anónima no puede leer cupones ni ejecutar la comprobación de administrador (HTTP 401).
-- Las 27 pruebas de reglas/permisos en PostgreSQL embebido siguen pasando. No sustituyen las pruebas de acceso real por correo ni la concurrencia del proyecto alojado.
+- Las 32 pruebas de reglas/permisos en PostgreSQL embebido siguen pasando. No sustituyen las pruebas de acceso real por correo ni la concurrencia del proyecto alojado.
 
 ## Cuenta administradora y promoción activa
 
 La cuenta propietaria de la tienda ya está verificada y autorizada como administradora mediante `ld_admins`. No se publican su correo ni su identificador en este documento. En la tienda, iniciar sesión y abrir **Administración**; actualizar la página después de cambios de permisos.
 
-La migración `202610300003_percentage_welcome.sql` se aplicó el 30 de octubre de 2026. Los nuevos premios son **5%, 10%, 15%, 20% y 25%**, con probabilidades **5%, 10%, 15%, 25% y 45%**. Se calculan sobre todas las prendas de la primera compra, sin envío y sin tope en pesos. Un 25% de $3,200 son $800. Los cupones anteriores conservan importe, código, vigencia e historial; no se habilita otro giro.
+La migración `202610300003_percentage_welcome.sql` se aplicó el 30 de octubre de 2026. Los nuevos premios son **5%, 10%, 15%, 20% y 25%**, con probabilidades **2%, 3%, 5%, 15% y 75%**. La distribución se actualizó el 3 de noviembre de 2026 con `202611030004_welcome_odds_75.sql`, que solo modifica las probabilidades de giros futuros. Se calculan sobre todas las prendas de la primera compra, sin envío y sin tope en pesos. Un 25% de $3,200 son $800. Los cupones anteriores conservan importe, código, vigencia e historial; no se habilita otro giro.
 
 Las pruebas verifican cálculos, redondeo, las 10,000 posiciones de la distribución, migración con cupones ya emitidos, permisos, caducidad, primer pedido y canje idempotente. En producción se verificó la distribución con una consulta de solo lectura, sin emitir ni canjear premios reales. Los giros y canjes reales de prueba debe realizarlos el propietario.
 

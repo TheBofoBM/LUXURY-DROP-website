@@ -34,7 +34,15 @@ test('percentage migration preserves issued coupons and enforces server percenta
     const retry=await claim(id);assert.equal(retry.id,c.id);assert.equal(retry.expires_at,c.expires_at);assert.equal(retry.discount_percent,null);
    }
   });
-  await t.test('server and wheel agree on every probability bucket, including 45% maximum',async()=>{
+  await t.test('changing odds preserves an already issued percentage coupon and all previous codes',async()=>{
+   const issued=await claim(newUser);
+   await db.exec('reset role');
+   const saved=(await db.query('select * from public.ld_coupons order by id')).rows;
+   await migrate('202611030004_welcome_odds_75.sql');
+   assert.deepEqual((await db.query('select * from public.ld_coupons order by id')).rows,saved);
+   assert.deepEqual(await claim(newUser),issued);
+  });
+  await t.test('server and wheel agree on every probability bucket, including 75% maximum',async()=>{
    await db.exec('reset role');
    const rows=(await db.query('select roll,public.ld_welcome_percent(roll) as prize from generate_series(0,9999) roll')).rows;
    const counts=welcomePrizes.map(()=>0);
