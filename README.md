@@ -95,3 +95,11 @@ La migración `supabase/migrations/202610300003_percentage_welcome.sql` se aplic
 El catálogo muestra únicamente tres playeras con imágenes aportadas por Luxury Drop: BOSS azul marino, HUGO negra y Lacoste verde. Las tres cuestan $1,499 MXN, están en talla M y tienen una pieza por modelo, según los datos confirmados por el propietario el 3 de noviembre de 2026. Las imágenes PNG conservan su transparencia y se presentan completas en portada, tarjetas, detalle y bolsa. La bolsa mantiene el límite por modelo y descarta prendas del catálogo anterior guardadas en el navegador.
 
 Los datos de catálogo se editan en `dist/catalog.js`; las ventas siguen atendiéndose personalmente. Este catálogo estático no descuenta existencias de forma compartida entre dispositivos.
+
+## Pedidos por WhatsApp
+
+**Pedir por WhatsApp** abre el chat del negocio con prendas, color, talla, cantidad, subtotal, promoción aplicable, ahorro y total estimado en MXN. El cliente pulsa Enviar en WhatsApp; abrir el enlace no envía automáticamente el mensaje ni registra una venta. No incluye correo, datos bancarios ni otros datos del perfil.
+
+El contacto público está en `dist/store-config.js`. Es un número internacional de solo dígitos. `dist/order-request.js` genera el texto y aplica una sola promoción: el mayor ahorro entre monto de compra y cupón seleccionado. No incluye códigos vencidos, utilizados, reservados o de demostración; mantiene cupones anteriores de importe fijo. La bolsa vuelve a comprobar el total al pulsar el enlace para impedir compartir el precio de un cupón que acaba de vencer.
+
+El dueño confirma disponibilidad, descuento, entrega y pago en la conversación. Después de comprobar el cobro, registra el canje en Administración. Este flujo no mueve dinero, reserva inventario ni consume cupones. El registro público por correo sigue pendiente de SMTP; pedir por WhatsApp no exige iniciar sesión si no se aplica un cupón.

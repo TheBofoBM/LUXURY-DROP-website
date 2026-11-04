@@ -63,3 +63,7 @@ El historial muestra los últimos 20 canjes: código, cliente, descuento, import
 Las pruebas automatizadas ejecutan ambas migraciones en PostgreSQL embebido y cubren permisos, intento de autoasignarse rol, códigos vencidos/reservados, consulta por administrador, canje por efectivo/transferencia, reintentos, un segundo administrador y actualización del perfil cliente. Al activar Supabase, comprobar también dos sesiones administrativas reales enviando la confirmación al mismo tiempo. La vista previa local no ofrece esas garantías comerciales.
 
 Los cupones nuevos son porcentuales: un 25% descuenta $800 de $3,200. El porcentaje y el subtotal completo determinan el importe; no existe un tope de $400. Los cupones antiguos de importe fijo se identifican con MXN y mantienen su monto original. No se alteran descuentos ni historial de ventas ya registradas.
+
+## Recibir una solicitud de pedido
+
+El cliente usa **Mi bolsa → Pedir por WhatsApp** y envía el mensaje preparado. Allí llegan las prendas, tallas, subtotal, descuento y total estimado; el código aparece solo cuando se aplica un cupón válido con el mejor ahorro. El envío no consume el cupón y no confirma una venta. Revisar el código en Administración, confirmar existencias y acordar la entrega. Después de recibir y comprobar el pago, registrar el canje manual. El envío no está incluido en el total de prendas.

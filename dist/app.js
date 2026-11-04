@@ -2,7 +2,9 @@ import { products, campaign, totals, sanitizeCart } from './catalog.js';
 import { setupWelcome,showWheel,showWelcome } from './welcome-ui.js';
 import { setupAdmin } from './admin-ui.js';
 import { currentWelcome,currentUser,now } from './welcome-service.js';
-import { welcomeDiscount,couponLabel,welcomePrizes,welcomeWeights } from './welcome-model.js';
+import { couponLabel,welcomePrizes,welcomeWeights } from './welcome-model.js';
+import { storeConfig } from './store-config.js';
+import { createOrderRequest,whatsappLink } from './order-request.js';
 const $ = s=>document.querySelector(s);
 const money = n=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',minimumFractionDigits:Number.isInteger(n)?0:2,maximumFractionDigits:2}).format(n);
 let cart=[];try {cart=sanitizeCart(JSON.parse(localStorage.getItem('ld-cart-v1')||'[]'));}catch{}
@@ -42,11 +44,11 @@ function renderCart(){
   if(!cart.length){$('#cart-content').innerHTML='<div class="cart-empty"><h2>Tu próximo fit<br>empieza aquí.</h2><p>Aún no hay piezas en tu bolsa.<br>Explora el drop y elige tus favoritas.</p><button class="button gold" id="continue-shopping">Explorar el drop <span>↗</span></button></div>';return;}
   const t=totals(cart);const next=campaign.tiers.find(tier=>tier.min>t.subtotal);
   const coupon=currentWelcome().coupon;
-  const selected=currentUser()&&coupon?.id===appliedCouponId?welcomeDiscount(t.subtotal,coupon,now()):0;
-  const discount=Math.max(t.discount,selected);
-  const useWelcome=selected>0&&selected>=t.discount;
-  const couponInfo=selected?`<div class="coupon-applied"><strong>${couponLabel(coupon)} de bienvenida</strong>${useWelcome?'Aplicado a esta vista previa.':'Tu descuento por monto es mayor; conservamos el mejor ahorro.'}<br>No se reserva ni se canjea el código al previsualizar.<button id="remove-coupon">Quitar de la vista previa</button></div>`:'<button id="cart-wheel" class="cart-coupon-invite">✳ Tu primer drop puede tener hasta 25% de descuento.<br>Consulta tu bienvenida y tus cupones ↗</button>';
-  $('#cart-content').innerHTML=cart.map((l,i)=>{const p=products.find(p=>p.id===l.id);return `<article class="cart-line"><img src="assets/${p.image}" alt="${p.name}"><div><h3>${p.name}</h3><p>Talla ${l.size}</p><div class="quantity"><button data-qty="-1" data-index="${i}" aria-label="Quitar una unidad de ${p.name}">−</button><span>${l.qty}</span><button data-qty="1" data-index="${i}" aria-label="Agregar una unidad de ${p.name}">+</button></div></div><div class="line-end"><span>${money(p.price*l.qty)}</span><button class="remove" data-remove="${i}">Eliminar</button></div></article>`;}).join('')+`<div class="cart-progress"><p>${next?`Te faltan <strong>${money(next.min-t.subtotal)}</strong> para desbloquear ${Math.round(next.rate*100)}% de descuento.`:'<strong>¡Nivel máximo! Tienes 10% de descuento.</strong>'}</p><div class="progress-track"><span style="width:${Math.min(t.subtotal/2000*100,100)}%"></span></div><small>Promociones no acumulables: mostramos el mejor descuento.</small></div>${couponInfo}<div class="totals"><div><span>Subtotal</span><span>${money(t.subtotal)}</span></div><div class="discount"><span>${useWelcome?'Cupón de bienvenida':`Descuento ${Math.round(t.rate*100)}%`}</span><span>− ${money(discount)}</span></div><div class="total"><span>Total de ejemplo</span><span>${money(Math.round((t.subtotal-discount)*100)/100)} <small>MXN</small></span></div></div><button class="button gold cart-action" id="order-preview">Ver resumen de ejemplo <span>↗</span></button><p class="cart-disclaimer">Esta es una demostración. No se enviará ningún pedido.<br>Los cupones no se consumen al explorar la bolsa.</p>`;
+  const request=createOrderRequest(cart,{coupon:currentUser()&&coupon?.id===appliedCouponId?coupon:null,now:now()});
+  const {selected,discount,useWelcome}=request;
+  const contactHref=whatsappLink(storeConfig.whatsappPhone,request.text);
+  const couponInfo=selected?`<div class="coupon-applied"><strong>${couponLabel(coupon)} de bienvenida</strong>${useWelcome?'Incluido en el total estimado; sujeto a validación.':'Tu descuento por monto es mayor; conservamos el mejor ahorro.'}<br>Tu cupón se valida al confirmar la venta.<button id="remove-coupon">Quitar cupón</button></div>`:'<button id="cart-wheel" class="cart-coupon-invite">✳ Tu primer drop puede tener hasta 25% de descuento.<br>Consulta tu bienvenida y tus cupones ↗</button>';
+  $('#cart-content').innerHTML=cart.map((l,i)=>{const p=products.find(p=>p.id===l.id);return `<article class="cart-line"><img src="assets/${p.image}" alt="${p.name}"><div><h3>${p.name}</h3><p>Talla ${l.size}</p><div class="quantity"><button data-qty="-1" data-index="${i}" aria-label="Quitar una unidad de ${p.name}">−</button><span>${l.qty}</span><button data-qty="1" data-index="${i}" aria-label="Agregar una unidad de ${p.name}">+</button></div></div><div class="line-end"><span>${money(p.price*l.qty)}</span><button class="remove" data-remove="${i}">Eliminar</button></div></article>`;}).join('')+`<div class="cart-progress"><p>${next?`Te faltan <strong>${money(next.min-t.subtotal)}</strong> para desbloquear ${Math.round(next.rate*100)}% de descuento.`:'<strong>¡Nivel máximo! Tienes 10% de descuento.</strong>'}</p><div class="progress-track"><span style="width:${Math.min(t.subtotal/2000*100,100)}%"></span></div><small>Promociones no acumulables: mostramos el mejor descuento.</small></div>${couponInfo}<div class="totals"><div><span>Subtotal</span><span>${money(t.subtotal)}</span></div><div class="discount"><span>${useWelcome?'Cupón de bienvenida':`Descuento ${Math.round(t.rate*100)}%`}</span><span>− ${money(discount)}</span></div><div class="total"><span>Total estimado</span><span>${money(Math.round((t.subtotal-discount)*100)/100)} <small>MXN</small></span></div></div><a class="button gold cart-action" id="order-whatsapp" href="${contactHref}" target="_blank" rel="noopener noreferrer">Pedir por WhatsApp <span>↗</span></a><button class="cart-summary-link" id="order-preview">Ver y copiar mi pedido</button><p class="cart-disclaimer">Se abrirá WhatsApp con tu selección. Pulsa Enviar para solicitar tu pedido.<br>Confirmaremos disponibilidad, descuento y entrega por chat. Envío no incluido. El cupón sigue sin canjearse.</p>`;
 }
 $('#cart-open').addEventListener('click',()=>{renderCart();openDialog('#cart-dialog');});
 $('#cart-content').addEventListener('click',e=>{
@@ -57,13 +59,30 @@ $('#cart-content').addEventListener('click',e=>{
   if(e.target.closest('#cart-wheel')){$('#cart-dialog').close();showWheel();}
   if(e.target.closest('#remove-coupon')){appliedCouponId=null;renderCart();}
   if(e.target.closest('#order-preview'))showOrder();
+  const contact=e.target.closest('#order-whatsapp');
+  if(contact){
+    // Recheck time-sensitive totals at the actual click. Never open a stale
+    // discount link if the coupon expired while the bag was left open.
+    const fresh=currentOrder();
+    if(contact.getAttribute('href')!==whatsappLink(storeConfig.whatsappPhone,fresh.text)){
+      e.preventDefault();renderCart();toast('Actualizamos el descuento y el total. Revísalos antes de pedir.');
+    }
+  }
 });
 function info(content){$('#info-content').innerHTML=content;openDialog('#info-dialog');}
 $('#terms-open').addEventListener('click',()=>info('<p class="eyebrow">LUXURY REWARDS / BIENVENIDA</p><h2>Tu primer drop,<br>con algo extra.</h2><ul><li>Un giro por cuenta con correo verificado y sin compras pagadas anteriores. No necesitas llenar la bolsa para girar.</li><li>Premios y probabilidades: '+welcomePrizes.map((percent,i)=>percent+'% de descuento ('+welcomeWeights[i]+'% de probabilidad)').join(', ')+'. Los segmentos de la ruleta son ilustrativos; las probabilidades no son iguales.</li><li>El cupón se guarda al girar en Perfil → Cupones y vence exactamente 24 horas después, aunque cierres la página o la animación.</li><li>Es personal, intransferible y de un solo uso en tu primera compra. No se puede repartir entre pedidos ni cambiar por efectivo. El porcentaje se aplica una sola vez al subtotal de todas las prendas de esa primera compra, sin tope en pesos. No incluye envío. El 25% no se convierte en 50% por comprar dos prendas: aumenta el ahorro en pesos al aumentar el subtotal. Redondeo al centavo sobre el subtotal completo.</li><li>No se acumula con descuentos por monto; se aplica el mayor ahorro. Un cupón vencido o utilizado no genera otro giro.</li><li>Los cupones anteriores de importe fijo conservan el valor y vencimiento con que se emitieron; no dan derecho a otro giro. Los perfiles de demostración y códigos LD-DEMO no son canjeables.</li></ul>'));
 $('#credits-open').addEventListener('click',()=>info('<p class="eyebrow">LUXURY DROP / DROP 01</p><h2>Las piezas del drop.</h2><p>Logo e imágenes de producto proporcionados por Luxury Drop. Este catálogo presenta las tres playeras de DROP 01.</p><small>Tipografía: Barlow Condensed y DM Sans, distribuidas mediante Google Fonts.</small>'));
 let orderText='';
-function showOrder(){const t=totals(cart);const c=currentWelcome().coupon;const selected=currentUser()&&c?.id===appliedCouponId?welcomeDiscount(t.subtotal,c,now()):0;const discount=Math.max(t.discount,selected);orderText='LUXURY DROP · RESUMEN DE DEMOSTRACIÓN\n\n'+cart.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty} × ${p.name} / Talla ${l.size} — ${money(l.qty*p.price)}`;}).join('\n')+`\n\nSubtotal: ${money(t.subtotal)}\nDescuento: ${money(discount)}\nTotal ilustrativo: ${money(Math.round((t.subtotal-discount)*100)/100)} MXN\n${selected>0&&selected>=t.discount?'Cupón de ejemplo: '+c.code+'\n':''}\nNo es un pedido. No se reserva ni canjea el cupón.`;info('<p class="eyebrow">SOLO PARA EXPLORAR</p><h2>Así se vería<br>tu selección.</h2><pre class="order-summary" id="order-text"></pre><button class="button gold" id="copy-order">Copiar resumen <span>↗</span></button><small>No se reserva inventario ni se registra una compra.</small>');$('#order-text').textContent=orderText;}
-$('#info-content').addEventListener('click',async e=>{if(e.target.closest('#copy-order')){try{await navigator.clipboard.writeText(orderText);$('#copy-order').textContent='Resumen copiado ✓';}catch{$('#copy-order').textContent='Selecciona y copia el texto de arriba';}}});
+function currentOrder(){
+  const c=currentWelcome().coupon;
+  return createOrderRequest(cart,{coupon:currentUser()&&c?.id===appliedCouponId?c:null,now:now()});
+}
+function showOrder(){
+  orderText=currentOrder().text;
+  info('<p class="eyebrow">TU PEDIDO / ATENCIÓN PERSONAL</p><h2>Tu selección,<br>lista para compartir.</h2><pre class="order-summary" id="order-text"></pre><button class="button gold" id="copy-order">Copiar mi pedido <span>↗</span></button><small>La disponibilidad y el descuento se confirman por WhatsApp. El cupón no se reserva ni se canjea al compartir el pedido.</small>');
+  $('#order-text').textContent=orderText;
+}
+$('#info-content').addEventListener('click',async e=>{if(e.target.closest('#copy-order')){orderText=currentOrder().text;$('#order-text').textContent=orderText;try{await navigator.clipboard.writeText(orderText);$('#copy-order').textContent='Pedido copiado ✓';}catch{$('#copy-order').textContent='Selecciona y copia el texto de arriba';}}});
 window.addEventListener('ld:welcome-updated',()=>{if(!currentUser())appliedCouponId=null;renderCart();});
-window.addEventListener('ld:apply-coupon',()=>{appliedCouponId=currentWelcome().coupon?.id||null;renderCart();openDialog('#cart-dialog');if(!cart.length)toast('Añade una prenda para previsualizar tu descuento.');});
+window.addEventListener('ld:apply-coupon',()=>{appliedCouponId=currentWelcome().coupon?.id||null;renderCart();openDialog('#cart-dialog');if(!cart.length)toast('Añade una prenda para calcular tu descuento.');});
 renderProducts();renderCart();setupWelcome(toast);setupAdmin({requestLogin:showWelcome,toast});

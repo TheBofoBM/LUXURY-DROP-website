@@ -30,3 +30,6 @@
  .hero-image{padding:48px 38px 75px}
  .product-detail-grid>img{height:360px;min-height:0;max-height:50vh;padding:30px 20px}
 }
+
+.cart-summary-link{display:block;margin:12px auto 0;padding:10px 4px;text-decoration:underline;font-size:11px;color:var(--muted)}
+a.cart-action{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none}
