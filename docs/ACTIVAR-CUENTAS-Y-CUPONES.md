@@ -2,14 +2,14 @@
 
 **El proyecto actual ya tiene las tablas y la conexión configuradas.** Consultar [ESTADO-SUPABASE.md](ESTADO-SUPABASE.md) antes de ejecutar SQL. Los pasos de creación siguientes sirven como referencia para un proyecto nuevo.
 
-El frontend permanece en GitHub Pages. Supabase aporta Auth (correo y Google) y PostgreSQL. Mientras falten sus dos valores públicos, el sitio funciona como **vista previa**: no pide datos personales, ofrece un perfil de ejemplo y emite códigos `LD-DEMO-…` sin valor de canje. Esa simulación se almacena en este navegador; no ofrece seguridad, sincronización entre dispositivos ni canje real.
+El frontend principal está en Cloudflare Pages (`https://luxury-drop.pages.dev/`), con GitHub Pages como respaldo. Supabase aporta Auth (correo y Google) y PostgreSQL. Mientras falten sus dos valores públicos, el sitio funciona como **vista previa**: no pide datos personales, ofrece un perfil de ejemplo y emite códigos `LD-DEMO-…` sin valor de canje. Esa simulación se almacena en este navegador; no ofrece seguridad, sincronización entre dispositivos ni canje real.
 
 ## 1. Crear el proyecto
 
 1. Crear un proyecto en https://supabase.com/dashboard con tu cuenta de propietario.
 2. Guardar la contraseña de la base de datos de forma privada.
-3. En un proyecto nuevo, ejecutar una vez y en orden las cuatro migraciones: `202610270001_welcome_coupons.sql`, `202610270002_manual_admin.sql` `202610300003_percentage_welcome.sql` y `202611030004_welcome_odds_75.sql`, dentro de `supabase/migrations/`. En un proyecto existente, aplicar únicamente las pendientes. Cada archivo se ejecuta dentro de una transacción.
-4. En Authentication → URL Configuration, configurar Site URL y una Redirect URL permitida exactamente como `https://thebofobm.github.io/LUXURY-DROP-website/` (incluye la barra final).
+3. En un proyecto nuevo, ejecutar una vez y en orden las cuatro migraciones: `202610270001_welcome_coupons.sql`, `202610270002_manual_admin.sql`, `202610300003_percentage_welcome.sql` y `202611030004_welcome_odds_75.sql`, dentro de `supabase/migrations/`. En un proyecto existente, aplicar únicamente las pendientes. Cada archivo se ejecuta dentro de una transacción.
+4. En Authentication → URL Configuration, configurar Site URL y una Redirect URL permitida exactamente como `https://luxury-drop.pages.dev/` (incluye la barra final). Conservar también el retorno `https://thebofobm.github.io/LUXURY-DROP-website/` si se mantiene el respaldo.
 
 ## 2. Acceso por correo
 

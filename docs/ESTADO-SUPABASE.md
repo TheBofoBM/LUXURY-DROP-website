@@ -1,14 +1,16 @@
-# Estado de la conexión · 3 de noviembre de 2026
+# Estado de la conexión · 4 de noviembre de 2026
 
 Proyecto: **Luxury Drop**, referencia `mtprghhunykhxcnvldza`.
 
 URL pública de API: `https://mtprghhunykhxcnvldza.supabase.co`.
 
+Sitio principal: **https://luxury-drop.pages.dev/**, conectado a los commits de `main` en GitHub.
+
 ## Hecho
 
 - Las cuatro migraciones del repositorio se ejecutaron desde SQL Editor en el proyecto alojado. No volver a ejecutarlas sobre esta misma base de datos.
 - Se verificaron las tablas `ld_accounts`, `ld_coupons`, `ld_orders` y `ld_admins`, todas con RLS activado.
-- Site URL y único retorno permitido: `https://thebofobm.github.io/LUXURY-DROP-website/`.
+- Site URL: `https://luxury-drop.pages.dev/`. Retornos exactos permitidos: esa misma URL y `https://thebofobm.github.io/LUXURY-DROP-website/` durante la transición.
 - Clave **publicable** del proyecto configurada en el frontend. No contiene claves privadas de servidor ni contraseñas de base de datos.
 - Email Auth y altas de usuarios habilitados; Google todavía deshabilitado.
 - Acceso configurado con **enlace de un solo uso**, tal como aparece en la plantilla predeterminada de Supabase.

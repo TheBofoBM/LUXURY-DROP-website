@@ -2,9 +2,9 @@
   "name": "luxury-drop",
   "private": true,
   "version": "0.2.0",
-  "description": "Luxury Drop: catálogo estático preparado para GitHub Pages.",
+  "description": "Luxury Drop: catálogo estático en Cloudflare Pages con Supabase y pedidos por WhatsApp.",
   "type": "module",
-  "homepage": "https://thebofobm.github.io/LUXURY-DROP-website/",
+  "homepage": "https://luxury-drop.pages.dev/",
   "repository": {
     "type": "git",
     "url": "https://github.com/TheBofoBM/LUXURY-DROP-website.git"

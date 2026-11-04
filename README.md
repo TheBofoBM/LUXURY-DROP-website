@@ -1,14 +1,16 @@
 # Luxury Drop · Import & Streetwear
 
-Tienda de demostración preparada para **GitHub Pages**, con catálogo, tallas, bolsa, bienvenida con ruleta y **Perfil → Cupones**. El sitio publicado no requiere localhost ni instalación de Node por parte del visitante. Cuentas reales y cupones protegidos se conectan a Supabase; mientras no esté configurado, el recorrido se identifica como vista previa.
+Tienda publicada en **Cloudflare Pages**, con catálogo DROP 01, tallas, bolsa, pedidos por WhatsApp, bienvenida con ruleta y **Perfil → Cupones**. El código y los commits permanecen en GitHub. El sitio publicado no requiere localhost ni instalación de Node por parte del visitante. Cuentas reales y cupones protegidos se conectan a Supabase; mientras no esté configurado, el recorrido se identifica como vista previa.
 
 **Para activar registro y cupones reales:** [guía paso a paso](docs/ACTIVAR-CUENTAS-Y-CUPONES.md). Para validar descuentos en efectivo o transferencia: [administración y canje manual](docs/ADMINISTRACION.md). No hace falta una pasarela de pagos.
 
-**Sitio:** https://thebofobm.github.io/LUXURY-DROP-website/
+**Sitio principal:** https://luxury-drop.pages.dev/
+
+**Respaldo en GitHub Pages:** https://thebofobm.github.io/LUXURY-DROP-website/
 
 **Repositorio:** https://github.com/TheBofoBM/LUXURY-DROP-website
 
-**Estado actual:** [Supabase conectado; acceso por correo para pruebas del equipo y activación de administrador pendiente](docs/ESTADO-SUPABASE.md). Para clientes externos falta configurar SMTP. No se necesita una pasarela de pagos para los canjes manuales.
+**Estado actual:** [Supabase conectado; administrador activo y acceso por correo limitado al equipo](docs/ESTADO-SUPABASE.md). Para clientes externos falta configurar SMTP. No se necesita una pasarela de pagos para los canjes manuales.
 
 ## Publicación en GitHub Pages
 
@@ -110,4 +112,4 @@ La migración `202611030004_welcome_odds_75.sql` aumenta al 75% la probabilidad 
 
 ## Publicación gratuita en Cloudflare Pages
 
-El repositorio está preparado para publicarse también en un subdominio `pages.dev` conservando los commits en GitHub. La conexión de la cuenta de Cloudflare y el primer despliegue están pendientes. Ver la [configuración exacta y los pasos de migración](docs/CLOUDFLARE-PAGES.md). El subdominio propuesto todavía no está reservado ni confirmado.
+La tienda está publicada en **https://luxury-drop.pages.dev/** desde el 4 de noviembre de 2026, conectada al repositorio y a la rama `main`. Los commits se publican automáticamente en Cloudflare. Supabase usa esa dirección principal y mantiene el retorno de GitHub Pages durante la transición. Ver la [configuración y los pasos de migración](docs/CLOUDFLARE-PAGES.md).

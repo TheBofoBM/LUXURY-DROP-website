@@ -1,6 +1,6 @@
 # Publicar en Cloudflare Pages
 
-La publicación en Cloudflare está preparada en el repositorio. La dirección propuesta es `luxury-drop.pages.dev`; solo se confirma cuando Cloudflare acepte el nombre del proyecto y complete el despliegue. El sitio actual en GitHub Pages sigue disponible.
+Publicación confirmada el **4 de noviembre de 2026**: **https://luxury-drop.pages.dev/**. Cloudflare compiló el commit `d41cf1b`, ejecutó las 32 pruebas y confirmó el despliegue. La integración está conectada al repositorio de la tienda y a `main`. GitHub Pages sigue disponible como respaldo.
 
 ## Configuración concreta
 
@@ -8,7 +8,7 @@ La publicación en Cloudflare está preparada en el repositorio. La dirección p
 | --- | --- |
 | Repositorio | `TheBofoBM/LUXURY-DROP-website` |
 | Rama de producción | `main` |
-| Nombre de proyecto propuesto | `luxury-drop` |
+| Nombre del proyecto | `luxury-drop` |
 | Framework | `None` |
 | Comando de build | `npm run build && npm run check && npm test` |
 | Directorio de salida | `dist` |
@@ -40,3 +40,7 @@ Comprobar catálogo, fotos, bolsa, enlace de WhatsApp y condiciones del 75% en l
 La validación de archivos verifica tanto rutas de raíz como rutas bajo `/LUXURY-DROP-website/`. La publicación en GitHub Pages puede continuar como respaldo; no es necesario eliminar repositorios ni datos de Supabase.
 
 Referencias: [Git integration](https://developers.cloudflare.com/pages/get-started/git-integration/), [Build configuration](https://developers.cloudflare.com/pages/configuration/build-configuration/), [Supabase redirects](https://supabase.com/docs/guides/auth/redirect-urls).
+
+## Estado verificado
+
+Supabase tiene Site URL `https://luxury-drop.pages.dev/` y dos retornos exactos: esa dirección y `https://thebofobm.github.io/LUXURY-DROP-website/`. Se comprobó el catálogo, las imágenes, la ficha de una playera y el enlace de WhatsApp con su resumen desde el nuevo dominio. No se enviaron mensajes, solicitudes de correo, giros ni canjes reales durante la verificación. El acceso por correo completo debe probarlo el propietario desde el nuevo dominio.
