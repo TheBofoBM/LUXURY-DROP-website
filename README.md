@@ -107,3 +107,7 @@ El dueño confirma disponibilidad, descuento, entrega y pago en la conversación
 El 3 de noviembre de 2026 se amplió a cinco el límite por modelo. Las tarjetas, el detalle y el mensaje de WhatsApp identifican las prendas como bajo pedido. Las solicitudes no descuentan inventario, y canjear un cupón no cambia existencias.
 
 La migración `202611030004_welcome_odds_75.sql` aumenta al 75% la probabilidad de ganar el premio de 25%, con efectos en giros futuros. Mantiene códigos, valor y vigencia de todos los cupones ya emitidos. No repetir migraciones aplicadas.
+
+## Publicación gratuita en Cloudflare Pages
+
+El repositorio está preparado para publicarse también en un subdominio `pages.dev` conservando los commits en GitHub. La conexión de la cuenta de Cloudflare y el primer despliegue están pendientes. Ver la [configuración exacta y los pasos de migración](docs/CLOUDFLARE-PAGES.md). El subdominio propuesto todavía no está reservado ni confirmado.
