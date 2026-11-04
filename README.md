@@ -89,3 +89,9 @@ Para vender se deberán definir inventario real, fotos, precios, canal de pedido
 Premios: **5%, 10%, 15%, 20% y 25%**; probabilidades respectivas **5%, 10%, 15%, 25% y 45%**. El mayor premio es el más probable. Un 25% sobre $1,600 ahorra $400; sobre $3,200 ahorra $800. No se acumula con otras promociones, no incluye envío y se redondea una sola vez al centavo sobre el subtotal completo.
 
 La migración `supabase/migrations/202610300003_percentage_welcome.sql` se aplica después de las dos anteriores. Conserva los cupones de importe fijo y su historial; los nuevos giros generan porcentaje. La campaña y la restricción de un giro por cuenta permanecen: no se vuelve a sortear al actualizar el sitio.
+
+## Catálogo DROP 01
+
+El catálogo muestra únicamente tres playeras con imágenes aportadas por Luxury Drop: BOSS azul marino, HUGO negra y Lacoste verde. Las tres cuestan $1,499 MXN, están en talla M y tienen una pieza por modelo, según los datos confirmados por el propietario el 3 de noviembre de 2026. Las imágenes PNG conservan su transparencia y se presentan completas en portada, tarjetas, detalle y bolsa. La bolsa mantiene el límite por modelo y descarta prendas del catálogo anterior guardadas en el navegador.
+
+Los datos de catálogo se editan en `dist/catalog.js`; las ventas siguen atendiéndose personalmente. Este catálogo estático no descuenta existencias de forma compartida entre dispositivos.

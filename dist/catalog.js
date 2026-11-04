@@ -1,9 +1,8 @@
-// Catálogo ilustrativo. Sustituir por inventario real antes de vender.
+// DROP 01: imágenes y existencias proporcionadas por Luxury Drop.
 export const products = [
-  {id:'tee',name:'Essential Tee',category:'Playeras',detail:'Algodón · Blanco',price:449,image:'tee.jpg',sizes:['S','M','L','XL'],tag:'EL BÁSICO',stock:8},
-  {id:'hoodie',name:'Everyday Hoodie',category:'Hoodies',detail:'Fit relajado · Mostaza',price:899,image:'hoodie.jpg',sizes:['S','M','L'],tag:'DROP 01',stock:5},
-  {id:'jacket',name:'Midnight Jacket',category:'Chamarras',detail:'Estilo biker · Negro',price:1299,image:'jacket.jpg',sizes:['S','M','L'],tag:'STATEMENT PIECE',stock:3},
-  {id:'denim',name:'Classic Denim',category:'Jeans',detail:'Corte recto · Azul',price:749,image:'denim.jpg',sizes:['28','30','32','34'],tag:'DAILY ROTATION',stock:6}
+  {id:'boss-navy',name:'Playera BOSS',category:'Playeras',detail:'Azul marino · Logo frontal',price:1499,image:'drop-01-boss-azul-marino.png',sizes:['M'],tag:'DROP 01 / 01',stock:1,color:'#172036'},
+  {id:'hugo-black',name:'Playera HUGO',category:'Playeras',detail:'Negro · Estampado frontal',price:1499,image:'drop-01-hugo-negra.png',sizes:['M'],tag:'DROP 01 / 02',stock:1,color:'#232323'},
+  {id:'lacoste-green',name:'Playera Lacoste',category:'Playeras',detail:'Verde · Franjas en hombros',price:1499,image:'drop-01-lacoste-verde.png',sizes:['M'],tag:'DROP 01 / 03',stock:1,color:'#064e40'}
 ];
 export const campaign = {tiers:[{min:1000,rate:0.05},{min:2000,rate:0.10}]};
 export function totals(cart) {
