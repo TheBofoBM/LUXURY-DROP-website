@@ -12,7 +12,7 @@ Sitio principal: **https://luxury-drop.pages.dev/**, conectado a los commits de 
 - Se verificaron las tablas `ld_accounts`, `ld_coupons`, `ld_orders` y `ld_admins`, todas con RLS activado.
 - Site URL: `https://luxury-drop.pages.dev/`. Retornos exactos permitidos: esa misma URL y `https://thebofobm.github.io/LUXURY-DROP-website/` durante la transición.
 - Clave **publicable** del proyecto configurada en el frontend. No contiene claves privadas de servidor ni contraseñas de base de datos.
-- Email Auth y altas de usuarios habilitados; Google todavía deshabilitado.
+- Email Auth, altas de usuarios y Google habilitados. El propietario creó el cliente OAuth web y guardó sus credenciales directamente en Supabase; el panel confirma el proveedor activo.
 - Acceso configurado con **enlace de un solo uso**, tal como aparece en la plantilla predeterminada de Supabase.
 - Se comprobó que una solicitud anónima no puede leer cupones ni ejecutar la comprobación de administrador (HTTP 401).
 - Las 32 pruebas de reglas/permisos en PostgreSQL embebido siguen pasando. No sustituyen las pruebas de acceso real por correo ni la concurrencia del proyecto alojado.
@@ -27,7 +27,11 @@ Las pruebas verifican cálculos, redondeo, las 10,000 posiciones de la distribuc
 
 Para entrar por correo, solicitar un enlace y abrirlo con el mismo navegador donde se solicitó: la protección PKCE necesita el verificador guardado allí.
 
-## Antes de registrar clientes externos
+## Acceso de clientes
+
+Google es el acceso principal de la tienda y el correo queda como alternativa desplegable. Solo solicita identidad básica (`openid`, correo y perfil). El proyecto de Google figura como externo en estado «Prueba»; para estos permisos exactos Google documenta una excepción que permite acceso sin listar usuarios de prueba: https://support.google.com/cloud/answer/15549945?hl=en. La verificación de marca y los enlaces de privacidad y condiciones siguen pendientes; no se añaden otros permisos.
+
+## Antes de registrar clientes externos por correo
 
 El correo de Supabase por defecto solo se envía a direcciones del equipo y tiene un límite de pruebas reducido. Hace falta configurar SMTP propio para clientes externos. La web lo indica y no presenta el registro público como terminado.
 

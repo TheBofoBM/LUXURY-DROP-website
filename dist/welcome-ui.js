@@ -48,6 +48,16 @@ async function authTask(task){if(authBusy)return;authBusy=true;document.querySel
 export async function setupWelcome(toast){
   notify=toast;
   $('#auth-preview').hidden=!service.isPreview;$('#auth-live').hidden=service.isPreview;$('#google-signin').hidden=!service.hasGoogle;
+  $('#google-access-note').hidden=!service.hasGoogle;
+  $('#email-alternative').hidden=!service.hasGoogle;
+  $('#email-access').hidden=service.hasGoogle;
+  $('#email-alternative').addEventListener('click',()=>{
+    const expand=$('#email-access').hidden;
+    $('#email-access').hidden=!expand;
+    $('#email-alternative').setAttribute('aria-expanded',String(expand));
+    $('#email-alternative').textContent=expand?'Ocultar acceso por correo':'Prefiero usar mi correo';
+    if(expand&&!$('#email-form').hidden)$('#welcome-email').focus();
+  });
   if(service.emailMode==='magiclink')$('#email-submit').innerHTML='Recibir enlace de acceso <span>↗</span>';
   $('#email-delivery-note').hidden=service.emailDelivery!=='team-only';
   ['welcome-banner','rewards-register','profile-open'].forEach(id=>$('#'+id).addEventListener('click',showWelcome));

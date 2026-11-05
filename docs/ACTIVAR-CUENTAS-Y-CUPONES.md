@@ -20,9 +20,23 @@ El frontend principal está en Cloudflare Pages (`https://luxury-drop.pages.dev/
 
 Referencia: https://supabase.com/docs/guides/auth/auth-email-templates
 
-## 3. Google (opcional)
+## 3. Google como acceso principal
 
 Crear un cliente OAuth Web en Google Cloud y habilitar el proveedor Google en Supabase, usando el callback que muestre el panel de Supabase (normalmente `https://TU-PROYECTO.supabase.co/auth/v1/callback`). El client secret de Google se guarda en el proveedor de Supabase, nunca en GitHub Pages. Completar la configuración/publicación de la pantalla de consentimiento de Google antes de abrir el acceso al público.
+
+Configuración concreta de Luxury Drop:
+
+- Proyecto Google Cloud creado: `helpful-metric-513802-r6` (Luxury Drop). El propietario completó la configuración inicial, creó el cliente web y guardó las credenciales directamente en Supabase. El panel de Supabase confirma Google habilitado.
+- Público: externo, estado «Prueba». Google documenta una excepción para acceso exclusivamente con `openid`, `userinfo.email` y `userinfo.profile`: no requiere agregar clientes como usuarios de prueba y no aplica la caducidad de consentimiento de siete días. Si se solicitan otros permisos, esta excepción deja de aplicar. Referencia: https://support.google.com/cloud/answer/15549945?hl=en
+- Cliente OAuth: aplicación web, nombre `Luxury Drop web`.
+- Orígenes JavaScript: `https://luxury-drop.pages.dev` y `https://thebofobm.github.io` (sin rutas).
+- URI de redirección de Google: `https://mtprghhunykhxcnvldza.supabase.co/auth/v1/callback`.
+- Permisos mínimos: `openid`, `userinfo.email` y `userinfo.profile`.
+- Introducir Client ID y Client Secret únicamente en Authentication → Sign In / Providers → Google de Supabase. Mantener desactivados «Skip nonce checks» y «Allow users without an email».
+- Activar `googleEnabled` en `dist/config.js` solamente después de guardar el proveedor. La interfaz muestra Google primero y permite desplegar el acceso por correo como alternativa.
+- Verificar el selector de cuentas, el retorno a la tienda, la sesión y el acceso al perfil con una cuenta autorizada, sin emitir ni canjear un cupón real automáticamente.
+
+El cambio a «En producción» y la verificación de marca siguen pendientes; Google pide completar los enlaces de privacidad y condiciones. No se presenta la marca como verificada. El secreto OAuth permanece exclusivamente en Supabase, sin copiarse al repositorio.
 
 Referencia: https://supabase.com/docs/guides/auth/social-login/auth-google
 
