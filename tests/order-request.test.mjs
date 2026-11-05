@@ -40,3 +40,41 @@ test('legacy fixed coupons keep their amount and links encode accents, symbols a
  assert.equal(link.origin,'https://wa.me');assert.equal(link.pathname,'/522281140094');assert.equal(link.searchParams.get('text'),text);
  for(const phone of ['', '123','52abc2281140094','https://example.test','+0000000000'])assert.throws(()=>whatsappLink(phone,text),/INVALID_WHATSAPP_PHONE/);
 });
+
+test('Daily Drop is exactly three garments for 1299, with no automatic tier discount',()=>{
+ const order=createOrderRequest([{id:'daily-pack',size:'S-M-L',qty:1}],{now});
+ assert.equal(order.subtotal,1299);assert.equal(order.discount,0);assert.equal(order.total,1299);
+ assert.match(order.text,/1 paquete \(3 playeras\)/);assert.match(order.text,/100% algodón/);
+ assert.match(order.text,/Chica \(S\) \/ Mediana \(M\) \/ Grande \(L\)/);
+ assert.doesNotMatch(order.text,/Mi código de cupón/);
+});
+
+test('Daily Drop accepts a valid first-purchase coupon: 25 percent gives exactly 974.25',()=>{
+ const original=structuredClone(coupon);
+ const order=createOrderRequest([{id:'daily-pack',size:'M-M-M',qty:1}],{coupon,now});
+ assert.equal(order.discount,324.75);assert.equal(order.total,974.25);assert.equal(order.coupon.code,coupon.code);
+ assert.match(order.text,/\$974\.25/);assert.deepEqual(coupon,original);
+ for(const invalid of [{...coupon,status:'used'},{...coupon,expires_at:new Date(now).toISOString()},{...coupon,preview:true}]){
+  const rejected=createOrderRequest(order.lines,{coupon:invalid,now});
+  assert.equal(rejected.total,1299);assert.equal(rejected.coupon,null);
+ }
+});
+
+test('Daily pack sizes must be three valid choices and separate combinations stay separate',()=>{
+ for(const size of ['M','S-M','S-M-XL','S-M-L-L','M-M-M<script>']){
+  assert.throws(()=>createOrderRequest([{id:'daily-pack',size,qty:1}]),/EMPTY_CART/);
+ }
+ const order=createOrderRequest([{id:'daily-pack',size:'S-M-L',qty:2},{id:'daily-pack',size:'L-L-L',qty:8}]);
+ assert.deepEqual(order.lines,[{id:'daily-pack',size:'S-M-L',qty:2},{id:'daily-pack',size:'L-L-L',qty:3}]);
+ assert.equal(order.subtotal,6495);assert.equal(order.discount,0);assert.match(order.text,/2 paquetes \(6 playeras\)/);
+});
+
+test('mixed collections calculate tiers only on Luxury Edition and never stack with a welcome coupon',()=>{
+ const lines=[{id:'daily-pack',size:'S-M-L',qty:1},{id:'boss-navy',size:'M',qty:1}];
+ const standard=createOrderRequest(lines,{now});
+ assert.equal(standard.subtotal,2798);assert.equal(standard.tierRate,.05);assert.equal(standard.discount,74.95);
+ const welcome=createOrderRequest(lines,{coupon,now});
+ assert.equal(welcome.discount,699.5);assert.equal(welcome.total,2098.5);
+ const smaller=createOrderRequest(lines,{coupon:{...coupon,discount_percent:5},now});
+ assert.equal(smaller.discount,139.9);assert.equal(smaller.total,2658.1);
+});

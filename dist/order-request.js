@@ -20,12 +20,12 @@ export function createOrderRequest(cart,{coupon=null,now=Date.now()}={}){
   const useWelcome=selected>0&&selected>=t.discount;
   const discount=Math.max(t.discount,selected);
   const total=Math.round((t.subtotal-discount)*100)/100;
-  const promotion=useWelcome?`Cupón de bienvenida: ${couponLabel(realCoupon)}`:t.rate?`Promoción por monto: ${Math.round(t.rate*100)}%`:'Sin descuento';
+  const promotion=useWelcome?`Cupón de bienvenida: ${couponLabel(realCoupon)}`:t.rate?`Promoción por monto: ${Math.round(t.rate*100)}% en Luxury Edition`:'Sin descuento';
   const appliedCoupon=useWelcome?realCoupon:null;
   const text=[
     'Hola, quiero hacer un pedido en LUXURY DROP.',
     '',
-    ...lines.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty} × ${p.name} · ${p.detail} · Talla ${sizeLabel(l.size)}${p.fulfillment==='on-request'?' · Bajo pedido':''} — ${money(p.price*l.qty)} MXN`;}),
+    ...lines.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty}${p.units?` paquete${l.qty===1?'':'s'} (${l.qty*p.units} playeras)`: ''} × ${p.name} · ${p.collection} · ${p.detail} · ${p.units?'Tallas de las 3 playeras':'Talla'} ${sizeLabel(l.size)}${p.fulfillment==='on-request'?' · Bajo pedido':''} — ${money(p.price*l.qty)} MXN`;}),
     '',
     `Subtotal de prendas: ${money(t.subtotal)} MXN`,
     `${promotion} — ahorro ${money(discount)} MXN`,

@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {totals,sanitizeCart} from '../dist/catalog.js';
 test('discount tiers and reversal when removing products',()=>{
- assert.deepEqual(totals([]),{subtotal:0,rate:0,discount:0,total:0});
+ assert.deepEqual(totals([]),{subtotal:0,promotionSubtotal:0,rate:0,discount:0,total:0});
  const low=totals([{id:'boss-navy',qty:1}]);assert.equal(low.rate,.05);assert.equal(low.discount,74.95);
  const eligible=totals([{id:'hugo-black',qty:1},{id:'lacoste-green',qty:1}]);assert.equal(eligible.subtotal,2998);assert.equal(eligible.total,2698.2);
  const high=totals([{id:'boss-navy',qty:1},{id:'hugo-black',qty:1},{id:'lacoste-green',qty:1}]);assert.equal(high.rate,.1);assert.equal(high.total,4047.3);

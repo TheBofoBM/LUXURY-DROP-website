@@ -94,7 +94,7 @@ La migración `supabase/migrations/202610300003_percentage_welcome.sql` se aplic
 
 ## Catálogo DROP 01
 
-El catálogo muestra únicamente tres playeras con imágenes aportadas por Luxury Drop: BOSS azul marino, HUGO negra y Lacoste verde. Las tres cuestan $1,499 MXN, se ofrecen en tallas Chica (S), Mediana (M) y Grande (L) y permiten solicitar hasta cinco piezas por modelo y pedido. La disponibilidad y el plazo de entrega se confirman por WhatsApp; el límite no representa cinco prendas físicas confirmadas. Las imágenes PNG conservan su transparencia y se presentan completas en portada, tarjetas, detalle y bolsa. La bolsa mantiene el límite de cinco por modelo y descarta prendas del catálogo anterior guardadas en el navegador.
+Luxury Edition muestra tres playeras con imágenes aportadas por Luxury Drop: BOSS azul marino, HUGO negra y Lacoste verde. Las tres cuestan $1,499 MXN, se ofrecen en tallas Chica (S), Mediana (M) y Grande (L) y permiten solicitar hasta cinco piezas por modelo y pedido. La disponibilidad y el plazo de entrega se confirman por WhatsApp; el límite no representa cinco prendas físicas confirmadas. Las imágenes PNG conservan su transparencia y se presentan completas en portada, tarjetas, detalle y bolsa. La bolsa mantiene el límite de cinco por modelo y descarta prendas del catálogo anterior guardadas en el navegador.
 
 Los datos de catálogo se editan en `dist/catalog.js`; las ventas siguen atendiéndose personalmente. Este catálogo estático no descuenta existencias de forma compartida entre dispositivos.
 
@@ -113,3 +113,12 @@ La migración `202611030004_welcome_odds_75.sql` aumenta al 75% la probabilidad 
 ## Publicación gratuita en Cloudflare Pages
 
 La tienda está publicada en **https://luxury-drop.pages.dev/** desde el 4 de noviembre de 2026, conectada al repositorio y a la rama `main`. Los commits se publican automáticamente en Cloudflare. Supabase usa esa dirección principal y mantiene el retorno de GitHub Pages durante la transición. Ver la [configuración y los pasos de migración](docs/CLOUDFLARE-PAGES.md).
+
+
+### Luxury Edition y Daily Drop
+
+Las tres playeras de DROP 01 pertenecen a **Luxury Edition**, con composición comercial «100% algodón spandex» y calidad original indicadas por el propietario. Cada detalle incluye características visibles de la fotografía y una frase de cierre. Precio: $1,499 por playera.
+
+**Daily Drop** ofrece un paquete de 3 playeras de 100% algodón por $1,299 antes de cupones. Permite elegir Chica (S), Mediana (M) o Grande (L) para cada prenda; modelos, colores y disponibilidad se acuerdan por WhatsApp. La imagen del paquete es una ilustración identificada como tal. Un cupón válido del 25% descuenta $324.75 y deja $974.25 sin envío; no se emiten cupones al configurar ni compartir el paquete.
+
+En la bolsa cada unidad Daily Drop representa un paquete completo de tres prendas. Las tallas se conservan en el mensaje de WhatsApp. El límite de solicitud es de cinco paquetes en total, no cinco por combinación de tallas. Los descuentos automáticos por monto se calculan únicamente sobre Luxury Edition; se comparan con el cupón de bienvenida sobre el subtotal completo y se aplica un único descuento, el mayor.
