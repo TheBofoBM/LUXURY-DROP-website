@@ -94,7 +94,7 @@ La migración `supabase/migrations/202610300003_percentage_welcome.sql` se aplic
 
 ## Catálogo DROP 01
 
-El catálogo muestra únicamente tres playeras con imágenes aportadas por Luxury Drop: BOSS azul marino, HUGO negra y Lacoste verde. Las tres cuestan $1,499 MXN, están en talla M y permiten solicitar hasta cinco piezas por modelo y pedido. La disponibilidad y el plazo de entrega se confirman por WhatsApp; el límite no representa cinco prendas físicas confirmadas. Las imágenes PNG conservan su transparencia y se presentan completas en portada, tarjetas, detalle y bolsa. La bolsa mantiene el límite de cinco por modelo y descarta prendas del catálogo anterior guardadas en el navegador.
+El catálogo muestra únicamente tres playeras con imágenes aportadas por Luxury Drop: BOSS azul marino, HUGO negra y Lacoste verde. Las tres cuestan $1,499 MXN, se ofrecen en tallas Chica (S), Mediana (M) y Grande (L) y permiten solicitar hasta cinco piezas por modelo y pedido. La disponibilidad y el plazo de entrega se confirman por WhatsApp; el límite no representa cinco prendas físicas confirmadas. Las imágenes PNG conservan su transparencia y se presentan completas en portada, tarjetas, detalle y bolsa. La bolsa mantiene el límite de cinco por modelo y descarta prendas del catálogo anterior guardadas en el navegador.
 
 Los datos de catálogo se editan en `dist/catalog.js`; las ventas siguen atendiéndose personalmente. Este catálogo estático no descuenta existencias de forma compartida entre dispositivos.
 

@@ -8,9 +8,9 @@ const one=[{id:'boss-navy',size:'M',qty:1}];
 
 test('WhatsApp inquiry includes actual garments, sizes and exact percentage totals without consuming a coupon',()=>{
  const before=structuredClone(coupon);
- const order=createOrderRequest([...one,{id:'hugo-black',size:'M',qty:1}],{coupon,now});
+ const order=createOrderRequest([{id:'boss-navy',size:'S',qty:1},{id:'hugo-black',size:'L',qty:1}],{coupon,now});
  assert.equal(order.subtotal,2998);assert.equal(order.discount,749.5);assert.equal(order.total,2248.5);
- assert.match(order.text,/Playera BOSS.*Talla M/);assert.match(order.text,/Playera HUGO.*Talla M/);
+ assert.match(order.text,/Playera BOSS.*Talla Chica \(S\)/);assert.match(order.text,/Playera HUGO.*Talla Grande \(L\)/);
  assert.match(order.text,/LD-ABC123/);assert.match(order.text,/25%/);assert.match(order.text,/\$2,248\.50/);
  assert.match(order.text,/sigue sin canjearse/);assert.match(order.text,/Envío por confirmar/);
  assert.deepEqual(coupon,before);
@@ -28,7 +28,7 @@ test('expired, consumed, reserved and demonstration coupons are excluded; no pro
 test('order inquiry rejects an empty selection and removes old items, invalid sizes and excess stock',()=>{
  assert.throws(()=>createOrderRequest([]),/EMPTY_CART/);
  assert.throws(()=>createOrderRequest([{id:'jacket',size:'M',qty:1}]),/EMPTY_CART/);
- const order=createOrderRequest([...one,{id:'boss-navy',size:'M',qty:8},{id:'hugo-black',size:'L',qty:1}]);
+ const order=createOrderRequest([...one,{id:'boss-navy',size:'M',qty:8},{id:'hugo-black',size:'XL',qty:1}]);
  assert.deepEqual(order.lines,[{id:'boss-navy',size:'M',qty:5}]);assert.equal(order.subtotal,7495);assert.match(order.text,/Bajo pedido/);
 });
 

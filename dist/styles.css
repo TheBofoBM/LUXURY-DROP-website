@@ -33,3 +33,5 @@
 
 .cart-summary-link{display:block;margin:12px auto 0;padding:10px 4px;text-decoration:underline;font-size:11px;color:var(--muted)}
 a.cart-action{display:flex;align-items:center;justify-content:space-between;gap:12px;text-decoration:none}
+
+.sizes button{width:auto;flex:1;min-width:0;min-height:44px;height:auto;padding:10px 6px;font-size:11px}.swatches i{flex-shrink:0}

@@ -9,7 +9,7 @@ test('discount tiers and reversal when removing products',()=>{
  const removed=totals([{id:'hugo-black',qty:1}]);assert.equal(removed.rate,.05);
 });
 test('untrusted stored carts cannot exceed inventory across sizes or carry invalid lines',()=>{
- const cart=sanitizeCart([{id:'boss-navy',size:'M',qty:2},{id:'boss-navy',size:'M',qty:9},{id:'hugo-black',size:'S',qty:1},{id:'lacoste-green',size:'M',qty:-1},{id:'tee',size:'M',qty:1},{id:'jacket',size:'M',qty:1}]);
- assert.deepEqual(cart,[{id:'boss-navy',size:'M',qty:5}]);
+ const cart=sanitizeCart([{id:'boss-navy',size:'S',qty:2},{id:'boss-navy',size:'M',qty:2},{id:'boss-navy',size:'L',qty:9},{id:'hugo-black',size:'XL',qty:1},{id:'lacoste-green',size:'M',qty:-1},{id:'tee',size:'M',qty:1},{id:'jacket',size:'M',qty:1}]);
+ assert.deepEqual(cart,[{id:'boss-navy',size:'S',qty:2},{id:'boss-navy',size:'M',qty:2},{id:'boss-navy',size:'L',qty:1}]);
  assert.deepEqual(sanitizeCart({}),[]);
 });

@@ -1,4 +1,4 @@
-import {products,sanitizeCart,totals} from './catalog.js';
+import {products,sanitizeCart,totals,sizeLabel} from './catalog.js';
 import {welcomeDiscount,couponLabel} from './welcome-model.js';
 
 const money=value=>new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN',minimumFractionDigits:2}).format(value);
@@ -25,7 +25,7 @@ export function createOrderRequest(cart,{coupon=null,now=Date.now()}={}){
   const text=[
     'Hola, quiero hacer un pedido en LUXURY DROP.',
     '',
-    ...lines.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty} × ${p.name} · ${p.detail} · Talla ${l.size}${p.fulfillment==='on-request'?' · Bajo pedido':''} — ${money(p.price*l.qty)} MXN`;}),
+    ...lines.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty} × ${p.name} · ${p.detail} · Talla ${sizeLabel(l.size)}${p.fulfillment==='on-request'?' · Bajo pedido':''} — ${money(p.price*l.qty)} MXN`;}),
     '',
     `Subtotal de prendas: ${money(t.subtotal)} MXN`,
     `${promotion} — ahorro ${money(discount)} MXN`,
