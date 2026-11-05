@@ -1,3 +1,4 @@
+import {celebratePrize} from './store-motion.js';
 import * as service from './welcome-service.js';
 import {welcomePrizes,couponStatus,countdown,couponLabel} from './welcome-model.js';
 const $=s=>document.querySelector(s);
@@ -23,6 +24,7 @@ function renderWheel(){
   const state=service.currentWelcome();const status=currentStatus();const c=state.coupon;
   $('#spin').disabled=spinning||!service.currentUser()||!state.eligible;
   $('#wheel-coupons').hidden=!c||spinning;
+  $('#wheel-shop').hidden=!c||spinning||status!=='available';
   $('#wheel-status').textContent=service.isPreview?'Vista previa · Este giro genera un cupón de ejemplo, sin valor de canje.':c?'Tu premio ya está guardado en Perfil → Cupones.':'Tu cuenta ya está lista. Descubre qué descuento te llevas.';
   if(!spinning)$('#wheel-result').textContent=c?(status==='expired'?'Tu cupón de bienvenida ha vencido.':`Tu descuento: ${couponLabel(c)}`):!state.eligible?'Esta bienvenida es exclusiva para tu primera compra.':'';
 }
@@ -63,6 +65,7 @@ export async function setupWelcome(toast){
   ['welcome-banner','rewards-register','profile-open'].forEach(id=>$('#'+id).addEventListener('click',showWelcome));
   $('#wheel-open').addEventListener('click',showWheel);
   $('#wheel-coupons').addEventListener('click',showProfile);
+  $('#wheel-shop').addEventListener('click',()=>{if(currentStatus()!=='available'){renderWheel();return;}close('#wheel-dialog');window.dispatchEvent(new CustomEvent('ld:shop-with-coupon'));});
   $('#welcome-later').addEventListener('click',()=>close('#welcome-dialog'));
   $('#welcome-terms').addEventListener('click',()=>$('#terms-open').click());
   $('#preview-signin').addEventListener('click',()=>authTask(async()=>{await service.previewSignIn();await authenticated();}));
@@ -79,7 +82,7 @@ export async function setupWelcome(toast){
       const coupon=await service.claimCoupon();const index=welcomePrizes.indexOf(coupon.discount_percent);
       const target=(360-(index+0.5)*360/welcomePrizes.length)%360;
       rotation+=2160+(target-rotation%360+360)%360;$('#wheel').style.transform=`rotate(${rotation}deg)`;
-      const done=()=>{spinning=false;renderWheel();notify(`Tu cupón de ${couponLabel(coupon)} está en Perfil → Cupones`);};
+      const done=()=>{spinning=false;renderWheel();celebratePrize($('#wheel-dialog'),$('#wheel-result'));notify(`Tu cupón de ${couponLabel(coupon)} está en Perfil → Cupones`);};
       if(index<0||matchMedia('(prefers-reduced-motion: reduce)').matches)done();else setTimeout(done,3550);
     }catch(error){spinning=false;renderWheel();$('#wheel-result').textContent=service.errorMessage(error);}
   });

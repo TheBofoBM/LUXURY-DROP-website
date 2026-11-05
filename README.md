@@ -127,3 +127,11 @@ En la bolsa cada unidad Daily Drop representa un paquete completo de tres prenda
 ### Playera de exhibición interactiva
 
 La BOSS de la portada responde al arrastre con dedo, mouse o lápiz: se desplaza e inclina y vuelve suavemente al soltar. El desplazamiento vertical de la página y el zoom táctil siguen disponibles. Las flechas del teclado permiten moverla; Escape o Inicio restablecen la posición. La animación respeta la preferencia de movimiento reducido. El efecto no modifica las fotos ni los controles del catálogo.
+
+### Animaciones de la tienda
+
+`store-motion.js` incorpora entrada progresiva de las tarjetas una vez por prenda, miniatura hacia la bolsa con confirmación del contador, respuesta visual al elegir talla y avance de las tres tallas de Daily Drop. Si el ícono de la bolsa está fuera de pantalla, aparece una confirmación temporal en la esquina.
+
+Al guardar un premio aparece una celebración breve y la acción «Elegir mis prendas», que conserva el cupón seleccionado para la bolsa. Aplicar o quitar un cupón anima la confirmación y la transición entre el importe anterior y el nuevo; el pedido de WhatsApp utiliza el total actualizado inmediatamente. La BOSS tiene una sombra que acompaña el arrastre y las dos colecciones resaltan su selección al navegar.
+
+Los efectos respetan `prefers-reduced-motion`, y sus capas decorativas no reciben clics ni foco. Las mejoras funcionales que el propietario decidió posponer están en [MEJORAS-PENDIENTES.md](docs/MEJORAS-PENDIENTES.md).

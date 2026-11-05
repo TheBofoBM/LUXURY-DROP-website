@@ -7,6 +7,8 @@ export function setupHeroMotion(){
   function paint(){
     frame=0;
     for(const [key,value] of Object.entries(pose))surface.style.setProperty(`--shirt-${key}`,`${value}${key==='x'||key==='y'?'px':'deg'}`);
+    surface.style.setProperty('--shirt-shadow-x',`${-pose.x*.45}px`);
+    surface.style.setProperty('--shirt-shadow-y',`${12+Math.abs(pose.ry)*.12}px`);
   }
   function schedule(){if(!frame)frame=requestAnimationFrame(paint);}
   function reset(){
