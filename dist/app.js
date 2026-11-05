@@ -1,3 +1,4 @@
+import {setupHeroMotion} from './hero-motion.js';
 import { products, campaign, totals, sanitizeCart, sizeName, sizeLabel } from './catalog.js';
 import { setupWelcome,showWheel,showWelcome } from './welcome-ui.js';
 import { setupAdmin } from './admin-ui.js';
@@ -94,4 +95,4 @@ function showOrder(){
 $('#info-content').addEventListener('click',async e=>{if(e.target.closest('#copy-order')){orderText=currentOrder().text;$('#order-text').textContent=orderText;try{await navigator.clipboard.writeText(orderText);$('#copy-order').textContent='Pedido copiado ✓';}catch{$('#copy-order').textContent='Selecciona y copia el texto de arriba';}}});
 window.addEventListener('ld:welcome-updated',()=>{if(!currentUser())appliedCouponId=null;renderCart();});
 window.addEventListener('ld:apply-coupon',()=>{appliedCouponId=currentWelcome().coupon?.id||null;renderCart();openDialog('#cart-dialog');if(!cart.length)toast('Añade una prenda para calcular tu descuento.');});
-renderProducts();renderCart();setupWelcome(toast);setupAdmin({requestLogin:showWelcome,toast});
+setupHeroMotion();renderProducts();renderCart();setupWelcome(toast);setupAdmin({requestLogin:showWelcome,toast});

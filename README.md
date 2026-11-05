@@ -122,3 +122,8 @@ Las tres playeras de DROP 01 pertenecen a **Luxury Edition**, con composición c
 **Daily Drop** ofrece un paquete de 3 playeras de 100% algodón por $1,299 antes de cupones. Permite elegir Chica (S), Mediana (M) o Grande (L) para cada prenda; modelos, colores y disponibilidad se acuerdan por WhatsApp. La imagen del paquete es una ilustración identificada como tal. Un cupón válido del 25% descuenta $324.75 y deja $974.25 sin envío; no se emiten cupones al configurar ni compartir el paquete.
 
 En la bolsa cada unidad Daily Drop representa un paquete completo de tres prendas. Las tallas se conservan en el mensaje de WhatsApp. El límite de solicitud es de cinco paquetes en total, no cinco por combinación de tallas. Los descuentos automáticos por monto se calculan únicamente sobre Luxury Edition; se comparan con el cupón de bienvenida sobre el subtotal completo y se aplica un único descuento, el mayor.
+
+
+### Playera de exhibición interactiva
+
+La BOSS de la portada responde al arrastre con dedo, mouse o lápiz: se desplaza e inclina y vuelve suavemente al soltar. El desplazamiento vertical de la página y el zoom táctil siguen disponibles. Las flechas del teclado permiten moverla; Escape o Inicio restablecen la posición. La animación respeta la preferencia de movimiento reducido. El efecto no modifica las fotos ni los controles del catálogo.
