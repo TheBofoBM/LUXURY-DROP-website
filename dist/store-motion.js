@@ -89,6 +89,7 @@ export function celebratePrize(dialog,result){
   finish(play(shine,[{transform:'translateX(-120%)'},{transform:'translateX(120%)'}],{duration:1500}),()=>layer.remove());
 }
 export function setupStoreMotion(){
+  setupPageTransitions();
   const links=[...document.querySelectorAll('.collection-links a,.header nav a')].filter(link=>['#catalogo','#daily-drop'].includes(link.hash));
   const activate=id=>links.forEach(link=>{const selected=link.hash===id;link.classList.toggle('is-current',selected);if(link.closest('.header'))link.classList.toggle('active',selected);if(selected)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});
   activate(location.hash==='#daily-drop'?'#daily-drop':'#catalogo');
@@ -98,5 +99,25 @@ export function setupStoreMotion(){
     const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting)activate(entry.target.closest('section').id==='daily-drop'?'#daily-drop':'#catalogo');},{rootMargin:'-10% 0px -55% 0px'});
     for(const selector of ['#catalog-title','#daily-title']){const title=document.querySelector(selector);if(title)observer.observe(title);}
   }
+}
+function setupPageTransitions(){
+  // Animate visible content without hiding it while waiting for an observer.
+  // Deep links and keyboard navigation keep their native focus/scroll behavior.
+  const hero=document.querySelector('.hero');
+  if(hero&&hero.getBoundingClientRect().bottom>0&&!location.hash){
+    document.querySelectorAll('.hero-copy>.eyebrow,.hero-copy>h1,.hero-desc,.hero-copy>.button,.hero-foot').forEach((element,index)=>{
+      play(element,[{opacity:0,transform:'translateY(16px)'},{opacity:1,transform:'translateY(0)'}],{duration:560,delay:index*65,fill:'backwards'});
+    });
+  }
+  if(!('IntersectionObserver' in window))return;
+  const observer=new IntersectionObserver(entries=>{
+    for(const entry of entries){
+      if(!entry.isIntersecting)continue;
+      observer.unobserve(entry.target);
+      if(entry.target.contains(document.activeElement))continue;
+      play(entry.target,[{opacity:0,transform:'translateY(20px)'},{opacity:1,transform:'translateY(0)'}],{duration:540});
+    }
+  },{threshold:.08});
+  document.querySelectorAll('.collection-links>a,.catalog .section-top,.daily-art,.daily-copy,.reward-intro,.reward-row,.brand-story>div').forEach(element=>observer.observe(element));
 }
 reduced.addEventListener?.('change',()=>{if(reduced.matches){for(const animation of running)animation.cancel();for(const card of [...waitingCards])reveal(card,false);}});
