@@ -1,5 +1,5 @@
 import {authConfig} from './config.js';
-import {choosePrize,welcomeDuration,welcomePrizes,couponDiscountCents} from './welcome-model.js';
+import {welcomeDuration,welcomePrizes,couponDiscountCents} from './welcome-model.js';
 
 const configured=Boolean(authConfig.supabaseUrl&&authConfig.supabasePublishableKey);
 const storeKey='ld-welcome-preview-v1';
@@ -60,7 +60,7 @@ export async function previewAdminSignIn(){if(!isPreview)throw new Error('PREVIE
 export async function sendEmail(email) {
   if(!client)throw new Error('AUTH_UNAVAILABLE');
   const {error}=await client.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:new URL('./',location.href).href}});if(error)throw error;
-  try{sessionStorage.setItem('ld-auth-intent','spin');}catch{}
+  try{sessionStorage.setItem('ld-auth-intent','profile');}catch{}
 }
 export async function verifyEmail(email,token) {
   const {data,error}=await client.auth.verifyOtp({email,token,type:'email'});if(error)throw error;
@@ -73,19 +73,6 @@ export async function googleSignIn() {
 export async function signOut() {
   if(client){const {error}=await client.auth.signOut();if(error)throw error;}
   try{sessionStorage.removeItem('ld-preview-session');sessionStorage.removeItem('ld-preview-admin');}catch{}user=null;admin=false;await refreshWelcome();
-}
-export async function claimCoupon() {
-  if(!user)throw new Error('AUTH_REQUIRED');
-  if(!isPreview){const {data,error}=await client.rpc('ld_claim_welcome');if(error)throw error;setState(data);return data.coupon;}
-  const issue=async()=>{
-    const saved=previewState();if(saved.coupon){setState(saved);return saved.coupon;}
-    const random=new Uint32Array(1);crypto.getRandomValues(random);
-    const issued=new Date().toISOString();
-    const coupon={id:crypto.randomUUID(),code:'LD-DEMO-'+crypto.randomUUID().replaceAll('-','').slice(0,16).toUpperCase(),amount_cents:null,discount_percent:choosePrize(random[0]/4294967296),status:'available',issued_at:issued,expires_at:new Date(Date.parse(issued)+welcomeDuration).toISOString(),preview:true};
-    // Local preview only. Live issuance and race protection always run in Postgres.
-    localStorage.setItem(storeKey,JSON.stringify({coupon}));setState({coupon,eligible:false});return coupon;
-  };
-  return navigator.locks?navigator.locks.request('ld-welcome-preview',issue):issue();
 }
 
 const adminPreviewKey='ld-admin-preview-v1';

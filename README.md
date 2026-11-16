@@ -1,5 +1,14 @@
 # Luxury Drop · Import & Streetwear
 
+## Campaña vigente · Black Friday (16 de noviembre de 2026)
+
+Solo se venden BOSS, HUGO y Lacoste de Luxury Edition. Precio anterior $1,499 MXN; ahorro automático $849; **precio final $650 MXN por playera**, sin registro ni cupón. Dos piezas cuestan $1,300 y tres $1,950, sin envío. Los importes de tarjetas, ficha, bolsa y mensaje de WhatsApp usan el mismo cálculo. El descuento no se acumula con cupones anteriores ni promociones por monto. Daily Drop se retiró del catálogo y las bolsas guardadas se depuran al abrir la tienda.
+
+La ruleta, sus invitaciones y la emisión de cupones desde el frontend se retiraron. Las cuentas y el historial de cupones/canjes siguen disponibles para consulta y administración. No se eliminó información de Supabase ni se modificaron códigos anteriores. La función histórica de emisión en la base de datos permanece intacta, pero el sitio ya no la invoca.
+
+No se ha fijado una fecha de finalización: esta campaña permanece activa hasta que el propietario solicite retirarla. Las secciones de promociones anteriores que siguen más abajo documentan el historial del proyecto y no describen la oferta vigente.
+
+
 Tienda publicada en **Cloudflare Pages**, con catálogo DROP 01, tallas, bolsa, pedidos por WhatsApp, bienvenida con ruleta y **Perfil → Cupones**. El código y los commits permanecen en GitHub. El sitio publicado no requiere localhost ni instalación de Node por parte del visitante. Cuentas reales y cupones protegidos se conectan a Supabase; mientras no esté configurado, el recorrido se identifica como vista previa.
 
 **Para activar registro y cupones reales:** [guía paso a paso](docs/ACTIVAR-CUENTAS-Y-CUPONES.md). Para validar descuentos en efectivo o transferencia: [administración y canje manual](docs/ADMINISTRACION.md). No hace falta una pasarela de pagos.
