@@ -146,3 +146,8 @@ Al guardar un premio aparece una celebración breve y la acción «Elegir mis pr
 Los efectos respetan `prefers-reduced-motion`, y sus capas decorativas no reciben clics ni foco. Las mejoras funcionales que el propietario decidió posponer están en [MEJORAS-PENDIENTES.md](docs/MEJORAS-PENDIENTES.md).
 
 La portada entra de forma escalonada y los bloques de colecciones, Daily Drop, recompensas y marca se revelan una sola vez al entrar en pantalla. El contenido permanece disponible sin depender de la animación. Los diálogos tienen transiciones nativas de entrada y salida (con entrada alternativa en navegadores anteriores), los paneles de bolsa y perfil se deslizan desde la derecha, y botones, flechas y navegación responden al cursor o al tacto. Escape y la restauración del foco conservan el comportamiento nativo. Los movimientos se desactivan con la preferencia de accesibilidad del dispositivo.
+
+
+## Gorras · 16 de noviembre de 2026
+
+Se añadieron cinco fotografías originales, sin edición, aportadas por el propietario. Champion negra, Uwharrie Roofing negra, HOWDY! negra y blanca y No Fear Be Brave negra cuestan $600 MXN antes del descuento y $450 MXN finales. WES-TRN Texas blanca cuesta $600 MXN sin descuento. La promoción de playeras sigue en $650 MXN; nunca convierte una gorra en una playera ni descuenta a la blanca por error. Filtros Todo/Playeras/Gorras y ordenación usan el precio final. Las gorras se agregan sin seleccionar S/M/L; composición, medida, ajuste y disponibilidad se confirman por WhatsApp. Cinco por modelo es un límite de solicitud, no inventario físico confirmado.
