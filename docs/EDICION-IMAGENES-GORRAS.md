@@ -1,10 +1,10 @@
 # Edición de imágenes de gorras
 
-16 de noviembre de 2026. Edición mediante la herramienta integrada `image_gen` (sin CLI ni clave API).
+16 de noviembre de 2026. Edición mediante la herramienta integrada `image_gen`, sin usar una API externa de generación. La compresión final usa `sharp-cli` local; no genera ni retoca contenido nuevo.
 
 Se retiraron fondos y manos y se solicitaron luz neutra, recorte transparente, producto completo y márgenes similares. Se conservan los originales JPG. Las versiones editadas son una presentación retocada con IA: no equivalen a conservar cada píxel o cada carácter diminuto de los originales. Se revisaron visualmente color, forma y distintivos principales antes de publicar.
 
-Los PNG RGBA se copian sin transformaciones posteriores a la carpeta del sitio. El fondo claro, el tamaño de presentación y la sombra se aplican con CSS. Los precios permanecen en $450 MXN para cuatro gorras y $600 MXN para la blanca WES-TRN.
+Los PNG RGBA maestros se guardan en la carpeta del sitio. Para servirlos se codifican copias WebP con calidad 90, calidad alfa 100 y esfuerzo 6, sin redimensionar ni cambiar el encuadre. El conjunto pasa de 10,342,519 a 1,438,790 bytes (aproximadamente 86% menos). El fondo claro, el tamaño de presentación y la sombra se aplican con CSS. Los precios permanecen en $450 MXN para cuatro gorras y $600 MXN para la blanca WES-TRN.
 
 ## Archivos guardados
 
@@ -13,6 +13,8 @@ Los PNG RGBA se copian sin transformaciones posteriores a la carpeta del sitio. 
 - Original: `dist/assets/gorra-howdy-negra-blanca.jpg`; edición: [ gorra-howdy-negra-blanca-studio.png ](../dist/assets/gorra-howdy-negra-blanca-studio.png)
 - Original: `dist/assets/gorra-wes-trn-texas-blanca.jpg`; edición: [ gorra-wes-trn-texas-blanca-studio.png ](../dist/assets/gorra-wes-trn-texas-blanca-studio.png)
 - Original: `dist/assets/gorra-no-fear-negra.jpg`; edición: [ gorra-no-fear-negra-studio.png ](../dist/assets/gorra-no-fear-negra-studio.png)
+
+Las cinco copias servidas tienen los mismos nombres que los maestros, con extensión `.webp` en lugar de `.png`.
 
 ## Prompt compartido exacto
 
