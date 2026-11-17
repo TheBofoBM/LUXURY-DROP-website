@@ -6,6 +6,13 @@ import {createOrderRequest,whatsappLink} from '../dist/order-request.js';
 const one=[{id:'boss-navy',size:'M',qty:1}];
 const coupon={id:'old-coupon',code:'LD-ABC123',discount_percent:25,amount_cents:null,status:'available',expires_at:'2099-11-04T18:00:00Z'};
 
+test('sunglasses inquiry keeps the chosen model and 350 price without inventing clothing sizes',()=>{
+ const order=createOrderRequest([{id:'sunglasses-blanco-azul',size:'U',qty:2}]);
+ assert.equal(order.subtotal,1100);assert.equal(order.discount,400);assert.equal(order.total,700);
+ assert.match(order.text,/2 × Lentes Azul Espejo.*Ajuste por confirmar.*\$700\.00.*\$350\.00 MXN c\/u/);
+ assert.doesNotMatch(order.text,/Talla|UV400|polarizad/i);
+});
+
 test('guest inquiry includes actual garments, sizes and Black Friday totals with no coupon requirement',()=>{
  const single=createOrderRequest(one);assert.equal(single.subtotal,1499);assert.equal(single.discount,849);assert.equal(single.total,650);
  const order=createOrderRequest([{id:'boss-navy',size:'S',qty:1},{id:'hugo-black',size:'L',qty:1}]);

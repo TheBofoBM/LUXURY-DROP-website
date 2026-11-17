@@ -29,6 +29,19 @@ test('four caps cost 450 each and the white WES-TRN stays at 600 without a fake 
   const order=totals([{id:cap.id,qty:2}]);assert.equal(order.total,white?1200:900);assert.equal(order.discount,white?0:300);
  }
  const all=totals(products.map(p=>({id:p.id,qty:1})));
- assert.equal(all.total,4350);assert.equal(all.discount,3147);assert.equal(all.subtotal,7497);
+ assert.equal(all.total,5750);assert.equal(all.discount,3947);assert.equal(all.subtotal,9697);
  assert.deepEqual(sanitizeCart([{id:'cap-wes-trn-white',size:'M',qty:1},{id:'cap-champion-black',size:'U',qty:1}]),[{id:'cap-champion-black',size:'U',qty:1}]);
+});
+
+test('all four sunglasses have three distinct views and cost 350 per pair, including mixed bags',()=>{
+ const glasses=products.filter(p=>p.category==='Lentes de sol');assert.equal(glasses.length,4);
+ for(const p of glasses){
+  assert.equal(p.price,550);assert.equal(salePrice(p),350);
+  assert.equal(p.images.length,3);assert.equal(new Set(p.images.map(view=>view.src)).size,3);assert.equal(p.image,p.images[0].src);
+  assert.deepEqual(p.sizes,['U']);
+  for(let qty=1;qty<=5;qty++){const t=totals([{id:p.id,qty}]);assert.equal(t.total,350*qty);assert.equal(t.discount,200*qty);}
+  assert.deepEqual(sanitizeCart([{id:p.id,size:'M',qty:1},{id:p.id,size:'U',qty:9}]),[{id:p.id,size:'U',qty:5}]);
+ }
+ const mixed=totals([{id:'boss-navy',qty:1},{id:'cap-champion-black',qty:1},{id:glasses[0].id,qty:2}]);
+ assert.equal(mixed.total,1800);assert.equal(mixed.discount,1399);
 });

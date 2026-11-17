@@ -20,7 +20,7 @@ export function createOrderRequest(cart){
   const text=[
     'Hola, quiero hacer un pedido en LUXURY DROP.',
     '',
-    ...lines.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty}${p.units?` paquete${l.qty===1?'':'s'} (${l.qty*p.units} playeras)`: ''} × ${p.name} · ${p.collection} · ${p.detail} · ${p.category==='Gorras'?'':'Talla '}${sizeLabel(l.size)}${p.fulfillment==='on-request'?' · Bajo pedido':''} — ${money(salePrice(p)*l.qty)} MXN${salePrice(p)<p.price?` (${money(salePrice(p))} MXN c/u, Black Friday)`:''}`;}),
+    ...lines.map(l=>{const p=products.find(p=>p.id===l.id);return `${l.qty}${p.units?` paquete${l.qty===1?'':'s'} (${l.qty*p.units} playeras)`: ''} × ${p.name} · ${p.collection} · ${p.detail} · ${p.category==='Playeras'?'Talla ':''}${sizeLabel(l.size)}${p.fulfillment==='on-request'?' · Bajo pedido':''} — ${money(salePrice(p)*l.qty)} MXN${salePrice(p)<p.price?` (${money(salePrice(p))} MXN c/u, Black Friday)`:''}`;}),
     '',
     `Subtotal antes de descuentos: ${money(t.subtotal)} MXN`,
     `${promotion} — ahorro ${money(discount)} MXN`,

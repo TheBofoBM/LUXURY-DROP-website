@@ -17,6 +17,7 @@ refs.push(...[...css.matchAll(/url\(['"]?([^'"\)]+)['"]?\)/g)].map(m => m[1]));
 refs.push(...[...app.matchAll(/from\s+['"]([^'"]+)['"]/g)].map(m => m[1]));
 refs.push(...[...app.matchAll(/import\(['"]([^'"]+)['"]\)/g)].map(m => m[1]));
 refs.push(...products.map(p => `assets/${p.image}`));
+refs.push(...products.flatMap(p => (p.images||[]).map(view => `assets/${view.src}`)));
 refs.push('.nojekyll');
 const ids = new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m => m[1]));
 const checked = new Set();

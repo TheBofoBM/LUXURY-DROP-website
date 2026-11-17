@@ -2,7 +2,9 @@
 
 ## Campaña vigente · Black Friday (16 de noviembre de 2026)
 
-Solo se venden BOSS, HUGO y Lacoste de Luxury Edition. Precio anterior $1,499 MXN; ahorro automático $849; **precio final $650 MXN por playera**, sin registro ni cupón. Dos piezas cuestan $1,300 y tres $1,950, sin envío. Los importes de tarjetas, ficha, bolsa y mensaje de WhatsApp usan el mismo cálculo. El descuento no se acumula con cupones anteriores ni promociones por monto. Daily Drop se retiró del catálogo y las bolsas guardadas se depuran al abrir la tienda.
+El catálogo incluye tres playeras, cinco gorras y cuatro modelos de lentes de sol. Las playeras BOSS, HUGO y Lacoste son de Luxury Edition. Precio anterior $1,499 MXN; ahorro automático $849; **precio final $650 MXN por playera**, sin registro ni cupón. Dos piezas cuestan $1,300 y tres $1,950, sin envío. Los importes de tarjetas, ficha, bolsa y mensaje de WhatsApp usan el mismo cálculo. El descuento no se acumula con cupones anteriores ni promociones por monto. Daily Drop se retiró del catálogo y las bolsas guardadas se depuran al abrir la tienda.
+
+Lentes de sol: precio anterior $550, final **$350 MXN por par**, ahorro $200. Cada ficha muestra frente y dos laterales con fondo transparente y reflejos neutros. Ver [edición de las 12 fotos](docs/EDICION-IMAGENES-LENTES.md). Las fotos originales de lentes con el entorno de la casa se conservan fuera del repositorio público.
 
 La ruleta, sus invitaciones y la emisión de cupones desde el frontend se retiraron. Las cuentas y el historial de cupones/canjes siguen disponibles para consulta y administración. No se eliminó información de Supabase ni se modificaron códigos anteriores. La función histórica de emisión en la base de datos permanece intacta, pero el sitio ya no la invoca.
 
